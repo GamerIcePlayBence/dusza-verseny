@@ -88,7 +88,7 @@ def UIMain():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.MOUSEWHEEL and mainmode == "kazamata":
+            if event.type == pygame.MOUSEWHEEL and mainmode == "Kazamata választás":
                 if mode == "BP":
                     if event.y > 0:
                         mode = "OSZ"
