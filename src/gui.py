@@ -111,6 +111,3 @@ def UIMain():
         GAME()
         pygame.display.flip()
     pygame.quit()
-
-
-UIMain()
