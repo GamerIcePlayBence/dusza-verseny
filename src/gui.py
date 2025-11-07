@@ -2,6 +2,7 @@ import pygame
 from src import game
 
 def select_kazamata(screen, mode):
+    pygame.display.set_caption("Kazamata választás")
     screen.fill((255, 255, 255))
     BP_Color = (0, 255, 0)
     OSZ_Color = (255, 0, 0)
@@ -64,26 +65,44 @@ def select_kazamata(screen, mode):
             pygame.draw.rect(screen, MK_Color, K_Rect, border_radius=10)
 
 
+def GAME(screen):
+    pygame.display.set_caption("Játék")
+    #Pakli
+    pygame.draw.rect(screen, (255, 201, 14), pygame.Rect(20, 20, 1230, 200), border_radius=10)
+    pygame.draw.rect(screen, (255, 127, 39), pygame.Rect(20, 20, 1230, 200), width=4, border_radius=10)
 
+    #Összes kártya
+    pygame.draw.rect(screen, (255, 201, 14), pygame.Rect(20, 250, 1230, 450), border_radius=10)
+    pygame.draw.rect(screen, (255, 127, 39), pygame.Rect(20, 250, 1230, 450), width=4, border_radius=10)
 
-def GAME():
-    pass
-
+    #range(pakli kártya száma)
+    for i in range(20):
+        if i >= 8:
+            i = i-8
+            K_POS_X = 30 + (i*150)
+            K_POS_Y = 120
+            color = (0, 0, 0)
+        else:
+            K_POS_X = 30 + (i*150)
+            K_POS_Y = 30
+            color = (255, 255, 255)
+        
+        if i <= 7:
+            pygame.draw.rect(screen, color, pygame.Rect(K_POS_X, K_POS_Y, 100, 80), border_radius=10)
 def UIMain():
     mode = "BP"
-    mainmode = "Kazamata választás"
+    mainmode = "szia"
     game.newDungeon("Barlangi Portya", "Egyszerű kazamata", ["Nerun"], "sebzés")
     game.newDungeon("Osi Szentely", "Kis kazamata", ["Arin", "Emera", "Selia", "Lord Torak"], "életerő")
     game.newDungeon("A melyseg kiralynoje", "Nagy kazamata", ["Liora", "Arin", "Selia", "Nerun", "Torak", "Priestess Selia"], "")
     pygame.init()
     screen = pygame.display.set_mode((1280, 720))
     screen.fill((255, 255, 255))
-    pygame.display.set_caption(mainmode)
     running = True
     if mainmode == "Kazamata választás":
         select_kazamata(screen, mode)
     else:
-        GAME()
+        GAME(screen)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -108,6 +127,5 @@ def UIMain():
                         mode = "OSZ"
                     select_kazamata(screen, mode)
 
-        GAME()
         pygame.display.flip()
     pygame.quit()
