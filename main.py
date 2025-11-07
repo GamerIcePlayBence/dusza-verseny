@@ -1,4 +1,5 @@
-from src import ui, test
+from . import gui
+from src import test
 import sys
 from pathlib import Path
 
@@ -8,7 +9,7 @@ def main():
         sys.exit(1)
 
     if sys.argv[1] == "--ui":
-        ui.UIMain()
+        gui.UIMain()
     else:
         test.TESTMain(sys.argv[1])
 
