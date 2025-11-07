@@ -1,7 +1,5 @@
-from . import gui
-from src import test
+from src import test, gui
 import sys
-from pathlib import Path
 
 def main():
     if len(sys.argv) == 1:
