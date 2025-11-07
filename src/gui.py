@@ -76,8 +76,14 @@ def GAME(screen):
     pygame.draw.rect(screen, (255, 127, 39), pygame.Rect(20, 250, 1230, 450), width=4, border_radius=10)
 
     #for pakli
-    #range(pakli kártya száma)
-    for i in range(20):
+    maxpaklikartya = int
+    if len(game.availableCards) % 2 == 0:
+        maxpaklikartya = len(game.availableCards) / 2
+    else:
+        maxpaklikartya = len(game.availableCards) + 1
+    
+    user = game.User()
+    for i in range(len(user.selected)):
         if i >= 8:
             i = i-8
             K_POS_X = 30 + (i*150)
@@ -86,9 +92,9 @@ def GAME(screen):
             K_POS_X = 30 + (i*150)
             K_POS_Y = 30
         
-        if i <= 7:
+        if i <= maxpaklikartya:
             pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(K_POS_X, K_POS_Y, 100, 80), border_radius=10)
-    
+
     #for gyűjtemény
     for i in range(len(game.availableCards)):
         if i >= 8:
@@ -98,9 +104,8 @@ def GAME(screen):
         else:
             K_POS_X = 30 + (i*150)
             K_POS_Y = 260
-        
-        if i <= 7:
-            pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(K_POS_X, K_POS_Y, 100, 80), border_radius=10)
+    
+        pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(K_POS_X, K_POS_Y, 100, 80), border_radius=10)
     
     
 
@@ -122,7 +127,7 @@ def create():
 
 def UIMain():
     mode = "BP"
-    mainmode = "Kazamata választás"
+    mainmode = "Game"
     create()
     pygame.init()
     screen = pygame.display.set_mode((1280, 720))
