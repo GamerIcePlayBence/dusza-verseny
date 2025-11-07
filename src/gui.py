@@ -2,7 +2,6 @@ import pygame
 
 def select_kazamata(screen, mode):
     screen.fill((255, 255, 255))
-    pygame.display.flip()
     BP_Color = (0, 255, 0)
     OSZ_Color = (255, 0, 0)
     MK_Color = (0, 0, 255)
@@ -61,7 +60,6 @@ def UIMain():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-                pygame.quit()
             if event.type == pygame.MOUSEWHEEL:
                 if mode == "BP":
                     if event.y > 0:
@@ -83,7 +81,6 @@ def UIMain():
                     select_kazamata(screen, mode)
 
         GAME()
-        pygame.display.flip()
     pygame.quit()
 
 
