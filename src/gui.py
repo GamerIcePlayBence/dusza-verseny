@@ -1,5 +1,5 @@
 import pygame
-import game
+from src import game
 
 def select_kazamata(screen, mode):
     screen.fill((255, 255, 255))
@@ -71,16 +71,16 @@ def GAME():
 
 def UIMain():
     mode = "BP"
-    mainmode = "kazamata"
+    mainmode = "Kazamata választás"
     game.newDungeon("Barlangi Portya", "Egyszerű kazamata", ["Nerun"], "sebzés")
     game.newDungeon("Osi Szentely", "Kis kazamata", ["Arin", "Emera", "Selia", "Lord Torak"], "életerő")
     game.newDungeon("A melyseg kiralynoje", "Nagy kazamata", ["Liora", "Arin", "Selia", "Nerun", "Torak", "Priestess Selia"], "")
     pygame.init()
     screen = pygame.display.set_mode((1280, 720))
     screen.fill((255, 255, 255))
-    pygame.display.set_caption("Játék mód")
+    pygame.display.set_caption(mainmode)
     running = True
-    if mainmode == "kazamata":
+    if mainmode == "Kazamata választás":
         select_kazamata(screen, mode)
     else:
         GAME()
