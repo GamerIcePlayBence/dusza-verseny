@@ -26,10 +26,10 @@ class Card:
 class Dungeon:
     # self.name = név
     # self.type = típus (egyszerű, kicsi, nagy)
-    # self.cards = a benne szereplő karakterek listája (nem maga a karakter hanem a helye az availableDungeons listába)
+    # self.cards = a benne szereplő karakterek nevének listája
     # self.reward = az jutalom amit a nyereségért kap a felhasználó
 
-    def __init__(self, name:str, size:str, cards:list[int], reward:str)->None:
+    def __init__(self, name:str, size:str, cards:list[str], reward:str)->None:
         self.name = name
         self.type = size
         self.cards = cards
@@ -58,6 +58,5 @@ def newLeader(srcName:str, finName:str, creationType:str)->None:
 
 
 def newDungeon(name:str, size:str, cards:list[str], reward:str)->None:
-    cardIndeces:list[int] = [ cardLookup[card] for card in cards ]
     cardLookup[name] = len(availableDungeons)
-    availableDungeons.append(Dungeon(name,size,cardIndeces,reward))
+    availableDungeons.append(Dungeon(name,size,cards,reward))
