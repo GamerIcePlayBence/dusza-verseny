@@ -44,7 +44,7 @@ availableLeaders:list[Card] = []
 def newCard(name:str, baseDmg:int, baseHp:int, cardType:str)->None:
     outputCard:Card = Card(name,baseDmg,baseHp,cardType)
     cardLookup[name] = len(availableCards)
-    availableCards.append(outputCard);
+    availableCards.append(outputCard)
 
 def newLeader(srcName:str, finName:str, creationType:str)->None:
     for character in availableCards:
@@ -54,7 +54,7 @@ def newLeader(srcName:str, finName:str, creationType:str)->None:
                 availableLeaders.append(Card(finName,character.baseDmg*2,character.baseHp,character.type))
             else:
                 availableLeaders.append(Card(finName,character.baseDmg,character.baseHp*2,character.type))
-            break;
+            break
 
 
 def newDungeon(name:str, size:str, cards:list[str], reward:str)->None:
