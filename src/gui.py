@@ -25,6 +25,7 @@ def select_kazamata(screen, mode):
             K_Rect = pygame.Rect(560, 500, 150, 200)
             pygame.draw.rect(screen, K_COLOR, Dungeons_Rect, border_radius=10)
             pygame.draw.rect(screen, BP_Color, K_Rect, border_radius=10)
+            pygame.draw.rect(screen, (0, 0, 0), K_Rect, width=4, border_radius=10)
 
     elif mode == "OSZ":
         for i in game.availableDungeons:
@@ -44,6 +45,7 @@ def select_kazamata(screen, mode):
             K_POS_X = 760 - i*200
             K_Rect = pygame.Rect(K_POS_X, 500, 150, 200)
             pygame.draw.rect(screen, OSZ_Color, K_Rect, border_radius=10)
+            pygame.draw.rect(screen, (0, 0, 0), K_Rect, width=4, border_radius=10)
 
     elif mode == "MK":   
         for i in game.availableDungeons:
@@ -63,6 +65,12 @@ def select_kazamata(screen, mode):
             K_POS_X = 1050 - i*200
             K_Rect = pygame.Rect(K_POS_X, 500, 150, 200)
             pygame.draw.rect(screen, MK_Color, K_Rect, border_radius=10)
+            pygame.draw.rect(screen, (0, 0, 0), K_Rect, width=4, border_radius=10)
+    
+    #Borders
+    pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(480, 40, 300, 400), width=4, border_radius=10)
+    pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(100, 140, 200, 300), width=4, border_radius=10)
+    pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(980, 140, 200, 300), width=4, border_radius=10)
 
 
 def GAME(screen):
@@ -127,7 +135,7 @@ def create():
 
 def UIMain():
     mode = "BP"
-    mainmode = "Game"
+    mainmode = "Kazamata választás"
     create()
     pygame.init()
     screen = pygame.display.set_mode((1280, 720))
