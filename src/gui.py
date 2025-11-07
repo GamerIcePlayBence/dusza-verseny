@@ -25,6 +25,7 @@ def select_kazamata(screen, mode):
             K_Rect = pygame.Rect(560, 500, 150, 200)
             pygame.draw.rect(screen, K_COLOR, Dungeons_Rect, border_radius=10)
             pygame.draw.rect(screen, BP_Color, K_Rect, border_radius=10)
+            pygame.draw.rect(screen, (0, 0, 0), K_Rect, width=4, border_radius=10)
 
     elif mode == "OSZ":
         for i in game.availableDungeons:
@@ -44,6 +45,7 @@ def select_kazamata(screen, mode):
             K_POS_X = 760 - i*200
             K_Rect = pygame.Rect(K_POS_X, 500, 150, 200)
             pygame.draw.rect(screen, OSZ_Color, K_Rect, border_radius=10)
+            pygame.draw.rect(screen, (0, 0, 0), K_Rect, width=4, border_radius=10)
 
     elif mode == "MK":   
         for i in game.availableDungeons:
@@ -63,6 +65,12 @@ def select_kazamata(screen, mode):
             K_POS_X = 1050 - i*200
             K_Rect = pygame.Rect(K_POS_X, 500, 150, 200)
             pygame.draw.rect(screen, MK_Color, K_Rect, border_radius=10)
+            pygame.draw.rect(screen, (0, 0, 0), K_Rect, width=4, border_radius=10)
+    
+    #Borders
+    pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(480, 40, 300, 400), width=4, border_radius=10)
+    pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(100, 140, 200, 300), width=4, border_radius=10)
+    pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(980, 140, 200, 300), width=4, border_radius=10)
 
 
 def GAME(screen):
@@ -76,8 +84,14 @@ def GAME(screen):
     pygame.draw.rect(screen, (255, 127, 39), pygame.Rect(20, 250, 1230, 450), width=4, border_radius=10)
 
     #for pakli
-    #range(pakli kártya száma)
-    for i in range(20):
+    maxpaklikartya = int
+    if len(game.availableCards) % 2 == 0:
+        maxpaklikartya = len(game.availableCards) / 2
+    else:
+        maxpaklikartya = len(game.availableCards) + 1
+    
+    user = game.User()
+    for i in range(len(user.selected)):
         if i >= 8:
             i = i-8
             K_POS_X = 30 + (i*150)
@@ -86,9 +100,9 @@ def GAME(screen):
             K_POS_X = 30 + (i*150)
             K_POS_Y = 30
         
-        if i <= 7:
+        if i <= maxpaklikartya:
             pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(K_POS_X, K_POS_Y, 100, 80), border_radius=10)
-    
+
     #for gyűjtemény
     for i in range(len(game.availableCards)):
         if i >= 8:
@@ -98,9 +112,8 @@ def GAME(screen):
         else:
             K_POS_X = 30 + (i*150)
             K_POS_Y = 260
-        
-        if i <= 7:
-            pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(K_POS_X, K_POS_Y, 100, 80), border_radius=10)
+    
+        pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(K_POS_X, K_POS_Y, 100, 80), border_radius=10)
     
     
 
