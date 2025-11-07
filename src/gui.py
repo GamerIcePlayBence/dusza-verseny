@@ -75,10 +75,38 @@ def select_kazamata(screen, mode):
     pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(100, 140, 200, 300), width=4, border_radius=10)
     pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(980, 140, 200, 300), width=4, border_radius=10)
 
-
-def GAME(screen):
+def draw_packli(screen):
     global user
-    pygame.display.set_caption("Játék")
+    BP_Color = (255, 255, 255)
+    card_rects = []
+
+    # maxpaklikartya számítása
+    if len(user.cards) % 2 == 0:
+        maxpaklikartya = len(user.cards) / 2
+    else:
+        maxpaklikartya = (len(user.cards) + 1) / 2
+
+    # téglalapok rajzolása
+    for i in range(len(user.selected)):
+        if i >= 8:
+            i2 = i - 8
+            K_POS_X = 30 + (i2 * 150)
+            K_POS_Y = 120
+        else:
+            K_POS_X = 30 + (i * 150)
+            K_POS_Y = 30
+
+        if i <= maxpaklikartya + 4:
+            rect = pygame.Rect(K_POS_X, K_POS_Y, 100, 80)
+            pygame.draw.rect(screen, BP_Color, rect, border_radius=10)
+            card_rects.append(rect)
+
+    return card_rects
+
+
+def select_pack(screen):
+    global user
+    pygame.display.set_caption("Pakli szerkeztése")
     #Pakli
     pygame.draw.rect(screen, (255, 201, 14), pygame.Rect(20, 20, 1230, 200), border_radius=10)
     pygame.draw.rect(screen, (255, 127, 39), pygame.Rect(20, 20, 1230, 200), width=4, border_radius=10)
@@ -88,22 +116,23 @@ def GAME(screen):
     pygame.draw.rect(screen, (255, 127, 39), pygame.Rect(20, 250, 1230, 450), width=4, border_radius=10)
 
     #for pakli
-    maxpaklikartya = int
-    if len(user.cards) % 2 == 0:
-        maxpaklikartya = len(user.cards) / 2
-    else:
-        maxpaklikartya = len(user.cards) + 1
-    for i in range(len(user.selected)):
-        if i >= 8:
-            i = i-8
-            K_POS_X = 30 + (i*150)
-            K_POS_Y = 120
-        else:
-            K_POS_X = 30 + (i*150)
-            K_POS_Y = 30
+ #   maxpaklikartya = 0
+ #   if len(user.cards) % 2 == 0:
+ #       maxpaklikartya = len(user.cards) / 2
+ #   else:
+ #       maxpaklikartya = len(user.cards) + 1
+ #   for i in range(len(user.selected)):
+ #       if i >= 8:
+ #           i = i-8
+ #           K_POS_X = 30 + (i*150)
+ #           K_POS_Y = 120
+ #       else:
+ #           K_POS_X = 30 + (i*150)
+ #           K_POS_Y = 30
         
-        if i <= maxpaklikartya:
-            pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(K_POS_X, K_POS_Y, 100, 80), border_radius=10)
+ #       if i <= maxpaklikartya+2:
+  #          pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(K_POS_X, K_POS_Y, 100, 80), border_radius=10)
+    draw_packli(screen) 
 
     #for gyűjtemény
     for i in range(len(user.cards)):
@@ -115,8 +144,7 @@ def GAME(screen):
             K_POS_X = 30 + (i*150)
             K_POS_Y = 260
     
-        pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(K_POS_X, K_POS_Y, 100, 80), border_radius=10)
-    
+        pygame.draw.rect(screen, (105, 105, 105), pygame.Rect(K_POS_X, K_POS_Y, 100, 80), border_radius=10)
     
 
 def create():
@@ -170,11 +198,10 @@ def create():
 
     for i in range(int(mkp)):
         useraddcard[random.randrange(1,10)]
-        print(i)
 
 def UIMain():
     mode = "BP"
-    mainmode = "Game"
+    mainmode = "Select_pack"
     create()
     pygame.init()
     screen = pygame.display.set_mode((1280, 720))
@@ -182,8 +209,8 @@ def UIMain():
     running = True
     if mainmode == "Kazamata választás":
         select_kazamata(screen, mode)
-    else:
-        GAME(screen)
+    elif mainmode == "Select_pack":
+        select_pack(screen)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -210,8 +237,8 @@ def UIMain():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0]:
+                    mouse_x, mouse_y = event.pos
                     if mainmode == "Kazamata választás":
-                        mouse_x, mouse_y = event.pos
                         if mode == "BP":
                             if mouse_x >= 980 and mouse_x <= 1169 and mouse_y >= 147 and mouse_y <= 432:
                                 mode = "MK"
@@ -233,6 +260,10 @@ def UIMain():
                             elif mouse_x >= 103 and mouse_x <= 292 and mouse_y >= 147 and mouse_y <= 432:
                                 mode = "MK"
                                 select_kazamata(screen, mode)
+                    elif mainmode == "Select_pack":
+                        for idx, rect in enumerate(draw_packli(screen)):
+                            if rect.collidepoint(mouse_x, mouse_y):
+                                print(f"{idx + 1}. kártya megnyomva!")
 
         pygame.display.flip()
     pygame.quit()
