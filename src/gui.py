@@ -75,26 +75,56 @@ def GAME(screen):
     pygame.draw.rect(screen, (255, 201, 14), pygame.Rect(20, 250, 1230, 450), border_radius=10)
     pygame.draw.rect(screen, (255, 127, 39), pygame.Rect(20, 250, 1230, 450), width=4, border_radius=10)
 
+    #for pakli
     #range(pakli kártya száma)
     for i in range(20):
         if i >= 8:
             i = i-8
             K_POS_X = 30 + (i*150)
             K_POS_Y = 120
-            color = (0, 0, 0)
         else:
             K_POS_X = 30 + (i*150)
             K_POS_Y = 30
-            color = (255, 255, 255)
         
         if i <= 7:
-            pygame.draw.rect(screen, color, pygame.Rect(K_POS_X, K_POS_Y, 100, 80), border_radius=10)
-def UIMain():
-    mode = "BP"
-    mainmode = "szia"
+            pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(K_POS_X, K_POS_Y, 100, 80), border_radius=10)
+    
+    #for gyűjtemény
+    #range(gyűjtemény kártya száma)
+    for i in range(len(game.availableCards)):
+        if i >= 8:
+            i = i-8
+            K_POS_X = 30 + (i*150)
+            K_POS_Y = 350
+        else:
+            K_POS_X = 30 + (i*150)
+            K_POS_Y = 260
+        
+        if i <= 7:
+            pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(K_POS_X, K_POS_Y, 100, 80), border_radius=10)
+    
+    
+
+def create():
     game.newDungeon("Barlangi Portya", "Egyszerű kazamata", ["Nerun"], "sebzés")
     game.newDungeon("Osi Szentely", "Kis kazamata", ["Arin", "Emera", "Selia", "Lord Torak"], "életerő")
     game.newDungeon("A melyseg kiralynoje", "Nagy kazamata", ["Liora", "Arin", "Selia", "Nerun", "Torak", "Priestess Selia"], "")
+
+    game.newCard("Arin", 2, 5, "föld")
+    game.newCard("Liora", 2, 4, "levegő")
+    game.newCard("Selia", 2, 6, "víz")
+    game.newCard("Nerun", 3, 3, "tűz")
+    game.newCard("Torak", 3, 4, "föld")
+    game.newCard("Emera", 2, 5, "levegő")
+    game.newCard("Kael", 3, 5, "tűz")
+    game.newCard("Myra", 3, 6, "föld")
+    game.newCard("Thalen", 3, 5, "levegő")
+    game.newCard("Isara", 2, 6, "víz")
+
+def UIMain():
+    mode = "BP"
+    mainmode = "Játék"
+    create()
     pygame.init()
     screen = pygame.display.set_mode((1280, 720))
     screen.fill((255, 255, 255))
