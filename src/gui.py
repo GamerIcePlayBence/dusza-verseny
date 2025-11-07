@@ -1,5 +1,8 @@
 import pygame
+import random
 from src import game
+
+user = None
 
 def select_kazamata(screen, mode):
     pygame.display.set_caption("Kazamata választás")
@@ -74,6 +77,7 @@ def select_kazamata(screen, mode):
 
 
 def GAME(screen):
+    global user
     pygame.display.set_caption("Játék")
     #Pakli
     pygame.draw.rect(screen, (255, 201, 14), pygame.Rect(20, 20, 1230, 200), border_radius=10)
@@ -85,12 +89,11 @@ def GAME(screen):
 
     #for pakli
     maxpaklikartya = int
-    if len(game.availableCards) % 2 == 0:
-        maxpaklikartya = len(game.availableCards) / 2
+    if len(user.cards) % 2 == 0:
+        maxpaklikartya = len(user.cards) / 2
     else:
-        maxpaklikartya = len(game.availableCards) + 1
-    
-    user = game.User()
+        maxpaklikartya = len(user.cards) + 1
+        global user
     for i in range(len(user.selected)):
         if i >= 8:
             i = i-8
@@ -104,7 +107,7 @@ def GAME(screen):
             pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(K_POS_X, K_POS_Y, 100, 80), border_radius=10)
 
     #for gyűjtemény
-    for i in range(len(game.availableCards)):
+    for i in range(len(user.cards)):
         if i >= 8:
             i = i-8
             K_POS_X = 30 + (i*150)
@@ -133,9 +136,45 @@ def create():
     game.newCard("Thalen", 3, 5, "levegő")
     game.newCard("Isara", 2, 6, "víz")
 
+    global user
+    user = game.User()
+
+    user.addCard("Arin")
+    user.addCard("Liora")
+    user.addCard("Selia")
+    user.addCard("Nerun")
+    user.addCard("Torak")
+    user.addCard("Emera")
+    user.addCard("Kael")
+    user.addCard("Myra")
+    user.addCard("Thalen")
+    user.addCard("Isara")
+
+    useraddcard = {
+        1: user.addCardToPack(user.cards[0]),
+        2: user.addCardToPack("Liora"),
+        3: user.addCardToPack("Selia"),
+        4: user.addCardToPack("Nerun"),
+        5: user.addCardToPack("Torak"),
+        6: user.addCardToPack("Emera"),
+        7: user.addCardToPack("Kael"),
+        8: user.addCardToPack("Myra"),
+        9: user.addCardToPack("Thalen"),
+        10: user.addCardToPack("Isara")
+    }
+
+    if len(user.cards) % 2 == 0:
+        mkp = len(user.cards) / 2
+    else:
+        mkp = len(user.cards) + 1
+
+    for i in range(mkp+1):
+        useraddcard[random.randrange(1,10)]
+        print(i)
+
 def UIMain():
     mode = "BP"
-    mainmode = "Kazamata választás"
+    mainmode = "Game"
     create()
     pygame.init()
     screen = pygame.display.set_mode((1280, 720))
