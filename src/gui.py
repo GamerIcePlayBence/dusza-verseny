@@ -90,7 +90,6 @@ def GAME(screen):
             pygame.draw.rect(screen, (255, 255, 255), pygame.Rect(K_POS_X, K_POS_Y, 100, 80), border_radius=10)
     
     #for gyűjtemény
-    #range(gyűjtemény kártya száma)
     for i in range(len(game.availableCards)):
         if i >= 8:
             i = i-8
@@ -123,7 +122,7 @@ def create():
 
 def UIMain():
     mode = "BP"
-    mainmode = "Játék"
+    mainmode = "Kazamata választás"
     create()
     pygame.init()
     screen = pygame.display.set_mode((1280, 720))
@@ -139,23 +138,49 @@ def UIMain():
                 running = False
             if event.type == pygame.MOUSEWHEEL and mainmode == "Kazamata választás":
                 if mode == "BP":
-                    if event.y > 0:
+                    if event.y < 0:
                         mode = "OSZ"
                     else:
                         mode = "MK"
                     select_kazamata(screen, mode)
                 elif mode == "OSZ":
-                    if event.y > 0:
+                    if event.y < 0:
                         mode = "MK"
                     else:
                         mode = "BP"
                     select_kazamata(screen, mode)
                 else:
-                    if event.y > 0:
+                    if event.y < 0:
                         mode = "BP"
                     else:
                         mode = "OSZ"
                     select_kazamata(screen, mode)
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    if mainmode == "Kazamata választás":
+                        mouse_x, mouse_y = event.pos
+                        if mode == "BP":
+                            if mouse_x >= 980 and mouse_x <= 1169 and mouse_y >= 147 and mouse_y <= 432:
+                                mode = "MK"
+                                select_kazamata(screen, mode)
+                            elif mouse_x >= 103 and mouse_x <= 292 and mouse_y >= 147 and mouse_y <= 432:
+                                mode = "OSZ"
+                                select_kazamata(screen, mode)
+                        elif mode == "MK":
+                            if mouse_x >= 980 and mouse_x <= 1169 and mouse_y >= 147 and mouse_y <= 432:
+                                mode = "OSZ"
+                                select_kazamata(screen, mode)
+                            elif mouse_x >= 103 and mouse_x <= 292 and mouse_y >= 147 and mouse_y <= 432:
+                                mode = "BP"
+                                select_kazamata(screen, mode)
+                        elif mode == "OSZ":
+                            if mouse_x >= 980 and mouse_x <= 1169 and mouse_y >= 147 and mouse_y <= 432:
+                                mode = "BP"
+                                select_kazamata(screen, mode)
+                            elif mouse_x >= 103 and mouse_x <= 292 and mouse_y >= 147 and mouse_y <= 432:
+                                mode = "MK"
+                                select_kazamata(screen, mode)
 
         pygame.display.flip()
     pygame.quit()
