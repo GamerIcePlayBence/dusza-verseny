@@ -93,7 +93,6 @@ def GAME(screen):
         maxpaklikartya = len(user.cards) / 2
     else:
         maxpaklikartya = len(user.cards) + 1
-        global user
     for i in range(len(user.selected)):
         if i >= 8:
             i = i-8
@@ -136,6 +135,7 @@ def create():
     game.newCard("Thalen", 3, 5, "levegő")
     game.newCard("Isara", 2, 6, "víz")
 
+
     global user
     user = game.User()
 
@@ -151,7 +151,7 @@ def create():
     user.addCard("Isara")
 
     useraddcard = {
-        1: user.addCardToPack(user.cards[0]),
+        1: user.addCardToPack("Arin"),
         2: user.addCardToPack("Liora"),
         3: user.addCardToPack("Selia"),
         4: user.addCardToPack("Nerun"),
@@ -168,7 +168,7 @@ def create():
     else:
         mkp = len(user.cards) + 1
 
-    for i in range(mkp+1):
+    for i in range(int(mkp)):
         useraddcard[random.randrange(1,10)]
         print(i)
 
