@@ -1,4 +1,3 @@
-from . import gui
 from src import test
 import sys
 from pathlib import Path
