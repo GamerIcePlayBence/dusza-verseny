@@ -1,4 +1,5 @@
 import pygame
+import game
 
 def select_kazamata(screen, mode):
     screen.fill((255, 255, 255))
@@ -50,6 +51,8 @@ def GAME():
 
 def UIMain():
     mode = "BP"
+    mainmode = "kazamata"
+    game.newDungeon("Barlangi Portya", "Egyszerű kazamata", ["Nerun"], "sebzés")
     pygame.init()
     screen = pygame.display.set_mode((1280, 720))
     screen.fill((255, 255, 255))
@@ -60,7 +63,7 @@ def UIMain():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            if event.type == pygame.MOUSEWHEEL:
+            if event.type == pygame.MOUSEWHEEL and mainmode == "kazamata":
                 if mode == "BP":
                     if event.y > 0:
                         mode = "OSZ"
@@ -81,6 +84,7 @@ def UIMain():
                     select_kazamata(screen, mode)
 
         GAME()
+        pygame.display.flip()
     pygame.quit()
 
 
