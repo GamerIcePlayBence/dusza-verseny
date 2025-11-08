@@ -1,8 +1,11 @@
 from pathlib import Path
 from src import game
 
-def export(typein, user, destination, test_des):
+def harc(user, dungeonname, destination, test_des):
+    with open(Path(test_des + "/" +destination), 'w', encoding="ASCII") as out:
+        out.write(game.fight(game.cardLookup[dungeonname], user))
 
+def export(typein, user, destination, test_des):
     if typein == "vilag":
         kartya = []
         kartyav = []
@@ -115,8 +118,8 @@ def TESTMain(test_dir_path):
                         else:
                             kereses = False
                     elif row.startswith("uj jatekos"):
+                        user = game.User()
                         kereses = True
-                        continue
                     elif row.startswith("felvetel gyujtemenybe"):
                         user.addCard(character[1])
                     elif row.startswith("uj pakli"):
@@ -136,6 +139,8 @@ def TESTMain(test_dir_path):
                         export("vilag", user, character[1], test_dir_path)
                     elif row.startswith("export jatekos"):
                         export("jatekos", user, character[1], test_dir_path)
+                    elif row.startswith("harc"):
+                        harc(user, character[1], character[2], test_dir_path)
         if not kereses:
             print("Hibás in.txt fálj!")
         pass
