@@ -126,15 +126,14 @@ def create():
 
 
 
-def checkForCollision(scrollamount:int, rect:pygame.Rect, point:tuple)->bool:
-    adj_y = point[1] - scrollamount
-
-    if not (rect.x <= point[0] <= rect.x + rect.w):
+def checkForCollision(scrollamount:int,rect:pygame.Rect, point:tuple)->bool:
+    #check if it isn't in the same column:
+    if point[0] <= rect.x or rect.x+rect.w <= point[0]:
         return False
-    if not (rect.y <= adj_y <= rect.y + rect.h):
+    #check if it isn't in the same row:
+    if point[1] <= rect.y+scrollamount or rect.y+rect.h+scrollamount <= point[1]:
         return False
     return True
-
 
 def selectPackScreenEventHandler(event):
     global scrollamount
