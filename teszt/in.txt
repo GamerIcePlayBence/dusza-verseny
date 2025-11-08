@@ -22,3 +22,5 @@ felvetel gyujtemenybe;Corky
 felvetel gyujtemenybe;Kira
 
 uj pakli;Corky,Kira
+
+export vilag;out.vilag01.txt
