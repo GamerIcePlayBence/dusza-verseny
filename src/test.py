@@ -1,6 +1,67 @@
 from pathlib import Path
 from src import game
 
+def export(typein, user, destination):
+
+    if typein == "vilag":
+        kartya = []
+        kartyav = []
+        kazamata = []
+        for kty in game.availableCards:
+            if not kty.isLeader:
+                kartya.append([
+                kty.name,
+                kty.baseDmg,
+                kty.baseHp,
+                kty.type
+                ])
+            else:
+                kartyav.append([
+                    kty.name,
+                    kty.baseDmg,
+                    kty.baseHp,
+                    kty.type
+                ])
+
+        for kaz in game.availableDungeons:
+            kaz_cards_list = kaz.cards  # az összes kártya
+
+            # neve alapján szétválasztjuk a vezért és a sima kártyákat
+            leaders = [c for c in kaz_cards_list if c in [v[0] for v in kartyav]]
+            normal_cards = [c for c in kaz_cards_list if c not in [v[0] for v in kartyav]]
+
+            # ha van vezér, azt rakjuk a sor végére
+            if leaders:
+                kaz_cards_str = ",".join(normal_cards) + ";" + leaders[0]
+            else:
+                kaz_cards_str = ",".join(normal_cards)
+
+            kazamata.append([
+                kaz.type,
+                kaz.name,
+                kaz_cards_str,
+                kaz.reward
+            ])
+
+
+
+        with open(Path(destination), 'w', encoding="ASCII") as out:
+            for ktyf in kartya:
+                out.write("kartya;")
+                out.write(";".join(map(str, ktyf)) + "\n")
+
+            out.write("\n")
+
+            for ktyf2 in kartyav:
+                out.write("vezer;")
+                out.write(";".join(map(str, ktyf2)) + "\n")
+
+            out.write("\n")
+
+            for ktyf3 in kazamata:
+                out.write("kazamata;")
+                out.write(";".join(map(str, ktyf3)) + "\n") 
+
 def TESTMain(test_dir_path):
     if Path(test_dir_path + '/in.txt').is_file():
         user = game.User()
@@ -15,7 +76,8 @@ def TESTMain(test_dir_path):
                         kereses = True
                     elif row.startswith("uj vezer"):
                         if len(character[1]) <= 16:
-                            game.newLeader(character[1], character[2], character[3])
+                            game.newLeader(character[2], character[1], character[3])
+                            print(character[2], character[1], character[3])
                             kereses = True
                         else:
                             kereses = False
@@ -24,7 +86,11 @@ def TESTMain(test_dir_path):
                         kazamanta_size = character[1]
                         cards = character[3].split(",")
                         if len(kazamanta_name) <= 20:
-                            game.newDungeon(kazamanta_name, kazamanta_size, cards, character[4])
+                            if len(character) == 6:
+                                cards.append(character[4])
+                                game.newDungeon(kazamanta_name, kazamanta_size, cards, character[5])
+                            else:
+                                game.newDungeon(kazamanta_name, kazamanta_size, cards, character[4])
                             kereses = True
                         else:
                             kereses = False
@@ -46,6 +112,8 @@ def TESTMain(test_dir_path):
                                 kereses = True
                             else:
                                 kereses = False
+                    elif row.startswith("export vilag"):
+                        export("vilag", user, character[1])
         if not kereses:
             print("Hibás in.txt fálj!")
         pass
