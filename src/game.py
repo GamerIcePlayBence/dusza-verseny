@@ -193,6 +193,7 @@ def fight(dungeonIndex:int, user:User)->str:
             out += f'{availableDungeons[dungeonIndex].reward};{userCards[0].name}\n'
             user.upgradeCard(userCards[0].name,availableDungeons[dungeonIndex].reward == "sebzes")
         else:
+            out += "jatekos nyert;"
             for character in availableCards:
                 name = character.name
                 if not (name in user.cardNames):
