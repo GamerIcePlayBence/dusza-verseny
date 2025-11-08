@@ -57,10 +57,21 @@ class CardSelectWrapper:
         self.card:game.Card = card
         self.selected = False
 
-        #self.card_texture = pygame.image.load("src/img/card.png").convert_alpha()
-        #self.card_scaled_texture = pygame.transform.scale(self.card_texture, (self.cardRect.width, self.cardRect.height))
-        self.title_font = pygame.font.Font("src/font/Minister Std Bold.otf", 25-(len(self.card.name)-6))
-        self.title = self.title_font.render(self.card.name, True, (255,255,255))
+        self.font = pygame.font.Font("src/font/Minister Std Bold.otf", 35)
+        self.title_render = pygame.font.Font("src/font/Minister Std Bold.otf", 25-(len(self.card.name)-6)).render(self.card.name, True, (255,255,255))
+        self.space_card_name1 = ""
+        self.space_card_name2 = ""
+        self.title_render1 = ""
+        self.title_render2 = ""
+        if self.card.name.find(" ") >= 1:
+            self.space_card_name1 = self.card.name.split(" ")[0]
+            self.space_card_name2 = self.card.name.split(" ")[1]
+            self.title_render1 = pygame.font.Font("src/font/Minister Std Bold.otf", 25-(len(self.space_card_name1)-6)).render( self.space_card_name1, True, (255,255,255))
+            self.title_render2 = pygame.font.Font("src/font/Minister Std Bold.otf", 25-(len(self.space_card_name2)-6)).render(self.space_card_name2, True, (255,255,255))
+
+        self.title_render = pygame.font.Font("src/font/Minister Std Bold.otf", 25-(len(self.card.name)-6)).render( self.card.name, True, (255,255,255))
+        self.stats_render = self.font.render(str(self.card.baseDmg) + "/"+ str(self.card.baseHp), True, (255,255,255))
+        self.type_render = self.font.render(self.card.type, True, (255,255,255))
 
     def update(self,deltaTime):
         if self.destPos == (-1,-1):
@@ -106,8 +117,17 @@ class CardSelectWrapper:
         if self.selected:
             pygame.draw.rect(screen,(255,255,0),(self.cardRect.x-selectedOffset//2,self.cardRect.y-selectedOffset//2,self.cardRect.w+selectedOffset,self.cardRect.h+selectedOffset),border_radius=10)
         pygame.draw.rect(screen,(255,0,0),self.cardRect,border_radius=10)
-        #screen.blit(self.card_scaled_texture, self.cardRect.topleft)
-        screen.blit(self.title, (self.cardRect.centerx-35, self.cardRect.top+11))
+        if self.card.name.find(" ") >= 1:
+            screen.blit(self.title_render1, (self.cardRect.centerx-45, self.cardRect.top+11))
+            screen.blit(self.title_render2, (self.cardRect.centerx-35, self.cardRect.top+41))
+        else:
+            screen.blit(self.title_render, (self.cardRect.centerx-35, self.cardRect.top+11))
+
+        screen.blit(self.stats_render, (self.cardRect.centerx-28, self.cardRect.centery-8))
+        if self.card.type == "levegő":
+            screen.blit(self.type_render, (self.cardRect.centerx-53, self.cardRect.centery+27))
+        else:
+            screen.blit(self.type_render, (self.cardRect.centerx-28, self.cardRect.centery+27))
 
 
 def putInORtakeOut(card1:CardSelectWrapper, user:game.User):
