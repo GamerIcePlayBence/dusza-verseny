@@ -4,7 +4,29 @@ from src import game
 
 width, height = 1280, 720
 
+#FO = főmenü
+#KARTYA = kártya menü
+MENU = "FO"
+
 user = None
+
+#dungeon selection menu
+mode = 0
+centered = 0
+dungeons:list[gameWrapper.DungeonSelectWrapper] = []
+drawncards:list[gameWrapper.CardSelectWrapper] = []
+
+dungeonCardWidth = 250
+dungeonCardHeight = 300
+onscreen = 3
+margins = (width/onscreen - dungeonCardWidth)/2
+spaceperdungeon = (dungeonCardWidth+margins*2)
+dungeonYpos = 300
+
+dungeonCharCardHeight = 144
+dungeonCharCardWidth = 108
+dungeonCharMargin = 10
+dungeonCharYpos = 625           #the center of the card
 
 #card selection menu
 #első, az hogy melyik listában van (0=pack;1=gyüjtemény) második, hogy hanyadik
@@ -23,79 +45,60 @@ def play_sound(typein):
         select_sound.play()
     pass
 
-def select_kazamata(screen, mode):
+def shiftFocus():
+    global centered
+    for i in range(len(dungeons)):
+        if mode != centered:
+            dungeons[i].destPos = (i-(centered-1))*spaceperdungeon+margins-(mode-centered)*spaceperdungeon
+        dungeons[i].selected = mode==i
+    centered = mode
+
+    drawncards.clear()
+    counter = 0
+    xpos = width/2 - len(dungeons[mode].dungeon.cards)*(dungeonCharMargin*2+dungeonCharCardWidth)/2
+    percard = (dungeonCharMargin*2+dungeonCharCardWidth)
+    for card in dungeons[mode].dungeon.cards:
+        drawncards.append(gameWrapper.CardSelectWrapper(dungeonCharCardWidth,dungeonCharCardHeight,xpos+counter*percard+dungeonCharMargin,dungeonCharYpos-dungeonCharCardHeight//2,game.availableCards[game.cardLookup[card]]))
+        counter+=1
+
+def select_kazamata(screen,background,deltaTime):
+    if len(dungeons) == 0:
+        counter = 1
+        for dungeon in game.availableDungeons:
+            dungeons.append(gameWrapper.DungeonSelectWrapper(dungeonCardWidth,dungeonCardHeight,spaceperdungeon*counter+margins,dungeonYpos-dungeonCardHeight//2,dungeon))
+            counter += 1
+        shiftFocus()
+
     pygame.display.set_caption("Kazamata választás")
-    screen.fill((255, 255, 255))
-    BP_Color = (0, 255, 0)
-    OSZ_Color = (255, 0, 0)
-    MK_Color = (0, 0, 255)
+    screen.blit(background,(0,0))
 
-    pygame.draw.line(screen, (0, 0, 0), (0, 450), (1280, 450), width=10)
 
-    if mode == "BP":
-        for i in game.availableDungeons:
-            if i.name == "Barlangi Portya":
-                K_POS_X, K_POS_Y, K_SIZE_01, K_SIZE_02, K_COLOR = 480, 40, 300, 400, BP_Color
-            elif i.name == "Osi Szentely":
-                K_POS_X, K_POS_Y, K_SIZE_01, K_SIZE_02, K_COLOR = 100, 140, 200, 300, OSZ_Color
-            elif i.name == "A melyseg kiralynoje":
-                K_POS_X, K_POS_Y, K_SIZE_01, K_SIZE_02, K_COLOR = 980, 140, 200, 300, MK_Color
-            else:
-                continue
-        
-            Dungeons_Rect = pygame.Rect(K_POS_X, K_POS_Y, K_SIZE_01, K_SIZE_02)
-            K_Rect = pygame.Rect(560, 500, 150, 200)
-            pygame.draw.rect(screen, K_COLOR, Dungeons_Rect, border_radius=10)
-            pygame.draw.rect(screen, BP_Color, K_Rect, border_radius=10)
-            pygame.draw.rect(screen, (0, 0, 0), K_Rect, width=4, border_radius=10)
+    for dungeon in dungeons:
+        dungeon.update(deltaTime)
+        dungeon.draw(screen)
 
-    elif mode == "OSZ":
-        for i in game.availableDungeons:
-            if i.name == "Barlangi Portya":
-                K_POS_X, K_POS_Y, K_SIZE_01, K_SIZE_02, K_COLOR = 980, 140, 200, 300, BP_Color
-            elif i.name == "Osi Szentely":
-                K_POS_X, K_POS_Y, K_SIZE_01, K_SIZE_02, K_COLOR = 480, 40, 300, 400, OSZ_Color
-            elif i.name == "A melyseg kiralynoje":
-                K_POS_X, K_POS_Y, K_SIZE_01, K_SIZE_02, K_COLOR = 100, 140, 200, 300, MK_Color
-            else:
-                continue
-        
-            Dungeons_Rect = pygame.Rect(K_POS_X, K_POS_Y, K_SIZE_01, K_SIZE_02)
-            pygame.draw.rect(screen, K_COLOR, Dungeons_Rect, border_radius=10)
+    for card in drawncards:
+        card.draw(screen)
 
-        for i in range(len(game.availableDungeons[1].cards)):
-            K_POS_X = 760 - i*200
-            K_Rect = pygame.Rect(K_POS_X, 500, 150, 200)
-            pygame.draw.rect(screen, OSZ_Color, K_Rect, border_radius=10)
-            pygame.draw.rect(screen, (0, 0, 0), K_Rect, width=4, border_radius=10)
+    pygame.draw.line(screen, (0, 0, 0), (0, 500), (1280, 500), width=10)
 
-    elif mode == "MK":   
-        for i in game.availableDungeons:
-            if i.name == "Barlangi Portya":
-                K_POS_X, K_POS_Y, K_SIZE_01, K_SIZE_02, K_COLOR = 100, 140, 200, 300, BP_Color
-            elif i.name == "Osi Szentely":
-                K_POS_X, K_POS_Y, K_SIZE_01, K_SIZE_02, K_COLOR = 980, 140, 200, 300, OSZ_Color
-            elif i.name == "A melyseg kiralynoje":
-                K_POS_X, K_POS_Y, K_SIZE_01, K_SIZE_02, K_COLOR = 480, 40, 300, 400, MK_Color
-            else:
-                continue
-        
-            Dungeons_Rect = pygame.Rect(K_POS_X, K_POS_Y, K_SIZE_01, K_SIZE_02)
-            pygame.draw.rect(screen, K_COLOR, Dungeons_Rect, border_radius=10)
-
-        for i in range(len(game.availableDungeons[2].cards)):
-            K_POS_X = 1050 - i*200
-            K_Rect = pygame.Rect(K_POS_X, 500, 150, 200)
-            pygame.draw.rect(screen, MK_Color, K_Rect, border_radius=10)
-            pygame.draw.rect(screen, (0, 0, 0), K_Rect, width=4, border_radius=10)
-    
+        #for i in range(len(game.availableDungeons[2].cards)):
+        #    K_POS_X = 1050 - i*200
+        #    K_Rect = pygame.Rect(K_POS_X, 500, 150, 200)
+        #    pygame.draw.rect(screen, MK_Color, K_Rect, border_radius=10)
+        #    pygame.draw.rect(screen, (0, 0, 0), K_Rect, width=4, border_radius=10)
     #Borders
-    pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(480, 40, 300, 400), width=4, border_radius=10)
-    pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(100, 140, 200, 300), width=4, border_radius=10)
-    pygame.draw.rect(screen, (0, 0, 0), pygame.Rect(980, 140, 200, 300), width=4, border_radius=10)
 
 
-
+def kazamata_update(event):
+    global mode
+    if event.type == pygame.MOUSEWHEEL:
+        mode -= event.y
+        if mode > len(dungeons)-1:
+            mode = len(dungeons)-1
+        if mode < 0:
+            mode = 0
+        shiftFocus()
 
 
 def create():
@@ -114,6 +117,8 @@ def create():
     game.newCard("Thalen", 3, 5, "levegő")
     game.newCard("Isara", 2, 6, "víz")
 
+    game.newLeader("Torak","Lord Torak","sebzes")
+    game.newLeader("Selia","Priestess Selia","eletero")
 
 
     global user
@@ -326,18 +331,26 @@ def UIMain():
     running = True
     clock:pygame.time.Clock = pygame.time.Clock()
 
-    drawCards(screen,background)
+    if MENU=="KARTYA":
+        drawCards(screen,background)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            selectPackScreenEventHandler(event)
+            if MENU == "FO":
+                kazamata_update(event)
+            else:
+                selectPackScreenEventHandler(event)
 
         fps = clock.get_fps()
         if fps == 0:
             fps = 0.00001
         deltaTime:float = 1/fps
-        updateSelectPackScreen(screen,deltaTime,user,background)
+        if MENU == "FO":
+            select_kazamata(screen,background,deltaTime)
+        else:
+            updateSelectPackScreen(screen,deltaTime,user,background)
+
         pygame.display.flip()
         clock.tick(120)
     pygame.quit()
