@@ -118,8 +118,8 @@ def TESTMain(test_dir_path):
                         else:
                             kereses = False
                     elif row.startswith("uj jatekos"):
+                        user = game.User()
                         kereses = True
-                        continue
                     elif row.startswith("felvetel gyujtemenybe"):
                         user.addCard(character[1])
                     elif row.startswith("uj pakli"):
