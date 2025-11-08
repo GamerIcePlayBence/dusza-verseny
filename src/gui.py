@@ -238,23 +238,24 @@ def startselectPackScreen(screen):
             y:float = margin+(margin*2+cardheight)*(colnum//colcount)
             cardsInPack.append(gameWrapper.CardSelectWrapper(cardwidth,cardheight,x,y,card))
             colnum += 1
-    elif len(cardsInPack) > 0 and len(user.selected) == 0:
-        cardsInPack.clear()
 
     if len(cards) == 0 and len(user.cards) != 0:
         colnum:int = 0
+        counter:int = 0
         for card in user.cards:
+            if counter in user.selected:
+                counter += 1
+                continue
             amountInRow = 0
-            if len(user.cards) - (colnum // colcount)*colcount > colcount:
+            if len(user.cards)-len(user.selected) - (colnum // colcount)*colcount > colcount:
                 amountInRow = colcount
             else:
-                amountInRow = len(user.cards) - (colnum // colcount)*colcount
+                amountInRow = len(user.cards)-len(user.selected) - (colnum // colcount)*colcount
             x:float = (colnum%colcount)*(2*margin+cardwidth)+margin + width/2-(amountInRow)*(margin*2+cardwidth)/2
             y:float = ypos+margin+(margin*2+cardheight)*(colnum//colcount)
             cards.append(gameWrapper.CardSelectWrapper(cardwidth,cardheight,x,y,card))
             colnum += 1
-    elif len(cards) > 0 and len(user.cards) == 0:
-        cardsInPack.clear()
+            counter += 1
 
 
     cardlayerheight = (rows+len(user.cards)//colcount)*(margin*2+cardheight)

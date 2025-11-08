@@ -83,7 +83,6 @@ def swapCards(card1:CardSelectWrapper, card2:CardSelectWrapper, user:game.User):
 
     if card1inselected < 0:
         if card2inselected < 0:
-            print("None selected")
             pass #ha egyik sincs a selected-be akkor teljesen mindegy hogy mi történik velük
         else:
             user.selected[card2inselected] = card1index
