@@ -41,12 +41,21 @@ cards:list[gameWrapper.CardSelectWrapper] = []
 putinortakeoutCARD = []
 
 def play_sound(typein):
-    select_sound = pygame.mixer.Sound("src/sound/select_sound.wav")
-    cbb_sound = pygame.mixer.Sound("src/sound/click_back_button_sound.wav")
+    path = "src/sound/"
+    select_sound = pygame.mixer.Sound(path + "select_sound.wav")
+    cbb_sound = pygame.mixer.Sound(path + "click_back_button_sound.wav")
+    scroll_sound = pygame.mixer.Sound(path + "scroll.wav")
+    letsgo_sound = pygame.mixer.Sound(path + "letgo.wav")
     if typein == "select":
         select_sound.play()
     elif typein == "wood":
         cbb_sound.play()
+    elif typein == "scroll":
+        scroll_sound.set_volume(0.3)
+        scroll_sound.play()
+    elif typein == "letsgo":
+        letsgo_sound.set_volume(0.2)
+        letsgo_sound.play()
 
 def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen):
     ymargins = 10
@@ -132,6 +141,7 @@ def kazamata_update(event):
     global MENU
     if event.type == pygame.MOUSEWHEEL:
         mode -= event.y
+        play_sound("scroll")
         if mode > len(dungeons)-1:
             mode = len(dungeons)-1
         if mode < 0:
@@ -142,6 +152,7 @@ def kazamata_update(event):
             for banner in dungeons:
                 if banner.cardRect.collidepoint(event.pos):
                     MENU = "FIGHT"
+                    play_sound("letsgo")
 
 
 def create():
