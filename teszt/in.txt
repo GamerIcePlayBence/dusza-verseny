@@ -15,3 +15,10 @@ uj kazamata;kis;Teszt2b Kazamata;Sadan,Eowyn,Kira;Darth ObiWan;sebzes
 uj kazamata;nagy;Teszt3 Kazamata;Aragorn,Eowyn,ObiWan,Kira,Tul'Arak;Darth ObiWan
 
 uj jatekos
+
+felvetel gyujtemenybe;Aragorn
+felvetel gyujtemenybe;Sadan
+felvetel gyujtemenybe;Corky
+felvetel gyujtemenybe;Kira
+
+uj pakli;Corky,Kira

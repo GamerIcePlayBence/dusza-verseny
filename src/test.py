@@ -3,6 +3,7 @@ from src import game
 
 def TESTMain(test_dir_path):
     if Path(test_dir_path + '/in.txt').is_file():
+        user = game.User()
         with open(Path(test_dir_path) / 'in.txt', 'r', encoding="ASCII") as f:
             kereses = False
             for row in f:
@@ -30,6 +31,10 @@ def TESTMain(test_dir_path):
                     elif row.startswith("uj jatekos"):
                         kereses = True
                         continue
+                    elif row.startswith("felvetel gyujtemenybe"):
+                        user.addCard(character[1])
+                    elif row.startswith("uj pakli"):
+                        pass
         if not kereses:
             print("Hibás in.txt fálj!")
         pass
