@@ -1,5 +1,4 @@
 import pygame
-import random
 from src import gameWrapper
 from src import game
 
@@ -16,6 +15,7 @@ scrollamount = 0
 linepoint = 0
 cardsInPack:list[gameWrapper.CardSelectWrapper] = []
 cards:list[gameWrapper.CardSelectWrapper] = []
+putinortakeoutCARD = []
 
 def play_sound(typein):
     select_sound = pygame.mixer.Sound("src/sound/select_sound.wav")
@@ -150,6 +150,20 @@ def selectPackScreenEventHandler(event):
         if scrollamount > 0:
             scrollamount = 0
     elif event.type == pygame.MOUSEBUTTONDOWN:
+        if event.button == 3:
+            counter = 0
+            for card in cardsInPack:
+                if checkForCollision(scrollamount,card.cardRect,event.pos):
+                    putinortakeoutCARD.append(card)
+                    return
+                counter+=1
+
+            counter = 0
+            for card in cards:
+                if checkForCollision(scrollamount,card.cardRect,event.pos):
+                    putinortakeoutCARD.append(card)
+                    return
+                counter+=1
         if event.button == 1:
             counter = 0
             for card in cardsInPack:
@@ -195,6 +209,15 @@ def updateSelectPackScreen(screen,deltaTime:float,user):
     cardlayer.fill(cardBG)
     pygame.draw.line(cardlayer,(255,255,255),(0,linepoint),(width,linepoint))
 
+    if len(putinortakeoutCARD) > 0:
+        if (len(cardsInPack) == 1 and not putinortakeoutCARD[0] in cardsInPack) or \
+                (len(cardsInPack) > 1):
+            gameWrapper.putInORtakeOut(putinortakeoutCARD[0],user)
+            putinortakeoutCARD.clear()
+            cardsInPack.clear()
+            cards.clear()
+            drawCards(screen)
+
     if len(selectedCards)>=2:
         if selectedCards[0][0] == 0:
             if selectedCards[1][0] == 0:
@@ -217,7 +240,8 @@ def updateSelectPackScreen(screen,deltaTime:float,user):
 
     screen.blit(cardlayer,(0,scrollamount))
 
-def startselectPackScreen(screen):
+
+def drawCards(screen):
     global cardlayer
     margin = 10
     colcount:int = 10
@@ -233,43 +257,42 @@ def startselectPackScreen(screen):
     linepoint = ypos
 
 
-    if len(cardsInPack) == 0 and len(user.selected) != 0:
-        colnum:int = 0
-        for index in user.selected:
-            card = user.cards[index]
-            amountInRow = 0
-            if len(user.selected) - (colnum // colcount)*colcount > colcount:
-                amountInRow = colcount
-            else:
-                amountInRow = len(user.selected) - (colnum // colcount)*colcount
-            x:float = (colnum%colcount)*(2*margin+cardwidth)+margin + width/2-(amountInRow)*(margin*2+cardwidth)/2
-            y:float = margin+(margin*2+cardheight)*(colnum//colcount)
-            cardsInPack.append(gameWrapper.CardSelectWrapper(cardwidth,cardheight,x,y,card))
-            colnum += 1
+    colnum:int = 0
+    for index in user.selected:
+        card = user.cards[index]
+        amountInRow = 0
+        if len(user.selected) - (colnum // colcount)*colcount > colcount:
+            amountInRow = colcount
+        else:
+            amountInRow = len(user.selected) - (colnum // colcount)*colcount
+        x:float = (colnum%colcount)*(2*margin+cardwidth)+margin + width/2-(amountInRow)*(margin*2+cardwidth)/2
+        y:float = margin+(margin*2+cardheight)*(colnum//colcount)
+        cardsInPack.append(gameWrapper.CardSelectWrapper(cardwidth,cardheight,x,y,card))
+        colnum += 1
 
-    if len(cards) == 0 and len(user.cards) != 0:
-        colnum:int = 0
-        counter:int = 0
-        for card in user.cards:
-            if counter in user.selected:
-                counter += 1
-                continue
-            amountInRow = 0
-            if len(user.cards)-len(user.selected) - (colnum // colcount)*colcount > colcount:
-                amountInRow = colcount
-            else:
-                amountInRow = len(user.cards)-len(user.selected) - (colnum // colcount)*colcount
-            x:float = (colnum%colcount)*(2*margin+cardwidth)+margin + width/2-(amountInRow)*(margin*2+cardwidth)/2
-            y:float = ypos+margin+(margin*2+cardheight)*(colnum//colcount)
-            cards.append(gameWrapper.CardSelectWrapper(cardwidth,cardheight,x,y,card))
-            colnum += 1
+    colnum:int = 0
+    counter:int = 0
+    for card in user.cards:
+        if counter in user.selected:
             counter += 1
+            continue
+        amountInRow = 0
+        if len(user.cards)-len(user.selected) - (colnum // colcount)*colcount > colcount:
+            amountInRow = colcount
+        else:
+            amountInRow = len(user.cards)-len(user.selected) - (colnum // colcount)*colcount
+        x:float = (colnum%colcount)*(2*margin+cardwidth)+margin + width/2-(amountInRow)*(margin*2+cardwidth)/2
+        y:float = ypos+margin+(margin*2+cardheight)*(colnum//colcount)
+        cards.append(gameWrapper.CardSelectWrapper(cardwidth,cardheight,x,y,card))
+        colnum += 1
+        counter += 1
 
 
-    cardlayerheight = (rows+len(user.cards)//colcount)*(margin*2+cardheight)
-    if cardlayerheight < height:
-        cardlayerheight = height
-    cardlayer = pygame.Surface((width,cardlayerheight))
+    if cardlayer == None:
+        cardlayerheight = (rows+len(user.cards)//colcount)*(margin*2+cardheight)
+        if cardlayerheight < height:
+            cardlayerheight = height
+        cardlayer = pygame.Surface((width,cardlayerheight))
     cardlayer.fill(cardBG)
 
     pygame.draw.line(cardlayer,(255,255,255),(0,ypos),(width,ypos))
@@ -292,7 +315,7 @@ def UIMain():
     running = True
     clock:pygame.time.Clock = pygame.time.Clock()
 
-    startselectPackScreen(screen)
+    drawCards(screen)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
