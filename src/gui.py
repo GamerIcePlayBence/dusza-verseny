@@ -114,6 +114,7 @@ def create():
     game.newCard("Myra", 3, 6, "föld")
     game.newCard("Thalen", 3, 5, "levegő")
     game.newCard("Isara", 2, 6, "víz")
+    game.newCard("IsaraThalenKaell", 2, 6, "víz")
 
 
 
@@ -125,6 +126,7 @@ def create():
     user.addCard("Selia")
     user.addCard("Nerun")
     user.addCard("Torak")
+    user.addCard("IsaraThalenKaell")
 
 
     user.addCardToPack("Arin")
@@ -257,6 +259,12 @@ def updateSelectPackScreen(screen,deltaTime:float,user,background):
     back_rect = pygame.Rect(0, 0, 120, 60)
     scaled_texture = pygame.transform.scale(back_texture, (back_rect.width, back_rect.height))
     screen.blit(scaled_texture, back_rect.topleft)
+
+    mydeck_font = pygame.font.Font("src/font/Minister Std Bold.otf", 50)
+    mydeck_title = mydeck_font.render("Paklid", True, (255,255,255))
+    gyujtemeny_title = mydeck_font.render("Kártyáid", True, (255,255,255))
+    screen.blit(mydeck_title, (back_rect.x, back_rect.y+100))
+    screen.blit(gyujtemeny_title, (back_rect.x, back_rect.y+200))
 
 
 def drawCards(screen,background):
