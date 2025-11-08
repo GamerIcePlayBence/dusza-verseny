@@ -1,7 +1,7 @@
 from pathlib import Path
 from src import game
 
-def export(typein, user, destination):
+def export(typein, user, destination, test_des):
 
     if typein == "vilag":
         kartya = []
@@ -45,7 +45,7 @@ def export(typein, user, destination):
 
 
 
-        with open(Path(destination), 'w', encoding="ASCII") as out:
+        with open(Path(test_des + "/" +destination), 'w', encoding="ASCII") as out:
             for ktyf in kartya:
                 out.write("kartya;")
                 out.write(";".join(map(str, ktyf)) + "\n")
@@ -62,6 +62,27 @@ def export(typein, user, destination):
                 out.write("kazamata;")
                 out.write(";".join(map(str, ktyf3)) + "\n") 
 
+    elif typein == "jatekos":
+        gyujtemeny = []
+        pakli = []
+        for i in range(len(user.cards)):
+            gyujtemeny.append([user.cards[i].name, user.cards[i].baseDmg, user.cards[i].baseHp, user.cards[i].type])
+        
+        for i2 in range(len(user.selected)):
+           usersect = user.selected[i2]
+           pakli.append(user.cards[usersect].name)
+
+        with open(Path(test_des + "/" +destination), 'w', encoding="ASCII") as out:
+            for gyuj in gyujtemeny:
+                out.write("gyujtemeny;")
+                out.write(";".join(map(str, gyuj)) + "\n")
+
+            out.write("\n")
+
+            for pack in pakli:
+                out.write("pakli;")
+                out.write(pack + "\n")
+
 def TESTMain(test_dir_path):
     if Path(test_dir_path + '/in.txt').is_file():
         user = game.User()
@@ -77,7 +98,6 @@ def TESTMain(test_dir_path):
                     elif row.startswith("uj vezer"):
                         if len(character[1]) <= 16:
                             game.newLeader(character[2], character[1], character[3])
-                            print(character[2], character[1], character[3])
                             kereses = True
                         else:
                             kereses = False
@@ -113,7 +133,9 @@ def TESTMain(test_dir_path):
                             else:
                                 kereses = False
                     elif row.startswith("export vilag"):
-                        export("vilag", user, character[1])
+                        export("vilag", user, character[1], test_dir_path)
+                    elif row.startswith("export jatekos"):
+                        export("jatekos", user, character[1], test_dir_path)
         if not kereses:
             print("Hibás in.txt fálj!")
         pass
