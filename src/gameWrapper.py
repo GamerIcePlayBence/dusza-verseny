@@ -6,8 +6,49 @@ from src import game
 swapAnimTime = 0.3
 selectedOffset = 8
 
+dungeonAnimTime = 0.1
+selectedDungonOffset = 0.4
+
+class DungeonSelectWrapper:
+    def __init__(self, width:float, height:float, x:float, y:float, dungeon:game.Dungeon):
+        self.cardRect:pygame.Rect = pygame.Rect(x,y,width,height)
+        self.pos:list[float] = [x,y]
+        self.destPos:float = -1
+        self.speed:float = -1
+        self.dungeon:game.Dungeon = dungeon
+        self.selected = False
+
+
+    def update(self,deltaTime):
+        if self.destPos == -1:
+            return 
+
+        if self.speed == -1:
+            distancex = self.destPos - self.pos[0] 
+            self.speed = distancex/dungeonAnimTime
+
+        if self.destPos != -1:
+            if abs(self.pos[0] - self.destPos) < 0.1:
+                self.pos[0] = self.destPos
+                self.destPos = -1
+                self.speed = -1
+            else:
+                self.pos[0] += self.speed*deltaTime
+                if (self.pos[0] > self.destPos and self.speed > 0) or \
+                    (self.pos[0] < self.destPos and self.speed < 0):
+                    self.pos[0] = self.destPos
+                    self.destPos = -1
+                    self.speed = -1
+            self.cardRect.x = int(self.pos[0])
+
+    def draw(self,screen):
+        widthoffset = self.cardRect.w*selectedDungonOffset
+        if self.selected:
+            pygame.draw.rect(screen,(255,0,0),(self.cardRect.x-widthoffset//2,self.cardRect.y-widthoffset,self.cardRect.w+widthoffset,self.cardRect.h+widthoffset),border_radius=10)
+        else:
+            pygame.draw.rect(screen,(255,0,0),self.cardRect,border_radius=10)
+
 class CardSelectWrapper:
-    # self.cardRect = a kártya maga
     def __init__(self, width:float, height:float, x:float, y:float, card:game.Card):
         self.cardRect:pygame.Rect = pygame.Rect(x,y,width,height)
         self.pos:list[float] = [x,y]
@@ -120,4 +161,6 @@ def swapCards(card1:CardSelectWrapper, card2:CardSelectWrapper, user:game.User):
             user.selected[card2inselected] = card1index
 
     print(user.selected)
+
+
 
