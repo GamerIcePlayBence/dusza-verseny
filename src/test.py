@@ -8,7 +8,6 @@ def export(typein, user, destination):
         kartyav = []
         kazamata = []
         for kty in game.availableCards:
-            print(kty.isLeader)
             if not kty.isLeader:
                 kartya.append([
                 kty.name,
@@ -17,34 +16,34 @@ def export(typein, user, destination):
                 kty.type
                 ])
             else:
-                print(kty)
                 kartyav.append([
                     kty.name,
                     kty.baseDmg,
                     kty.baseHp,
                     kty.type
                 ])
-        
+
         for kaz in game.availableDungeons:
-            kaz_cards = ""
-            i = 0
-            for kaz_cardsf in kaz.cards:
-                if i == 0:
-                    kaz_cards = kaz_cardsf
-                else:
-                    #kaz_vezer = any(elem in kartyav for elem in kaz_cardsf)
-                    #if kaz_vezer == True:
-                    #    kaz_cards = kaz_cards+";"+kaz_cardsf
-                    #else:
-                    kaz_cards = kaz_cards +","+ kaz_cardsf
-                i = i + 1
+            kaz_cards_list = kaz.cards  # az összes kártya
+
+            # neve alapján szétválasztjuk a vezért és a sima kártyákat
+            leaders = [c for c in kaz_cards_list if c in [v[0] for v in kartyav]]
+            normal_cards = [c for c in kaz_cards_list if c not in [v[0] for v in kartyav]]
+
+            # ha van vezér, azt rakjuk a sor végére
+            if leaders:
+                kaz_cards_str = ",".join(normal_cards) + ";" + leaders[0]
+            else:
+                kaz_cards_str = ",".join(normal_cards)
 
             kazamata.append([
                 kaz.type,
                 kaz.name,
-                kaz_cards,  
+                kaz_cards_str,
                 kaz.reward
             ])
+
+
 
         with open(Path(destination), 'w', encoding="ASCII") as out:
             for ktyf in kartya:
@@ -77,7 +76,8 @@ def TESTMain(test_dir_path):
                         kereses = True
                     elif row.startswith("uj vezer"):
                         if len(character[1]) <= 16:
-                            game.newLeader(character[1], character[2], character[3])
+                            game.newLeader(character[2], character[1], character[3])
+                            print(character[2], character[1], character[3])
                             kereses = True
                         else:
                             kereses = False
