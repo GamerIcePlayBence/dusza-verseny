@@ -159,7 +159,6 @@ def create():
     game.newCard("Myra", 3, 6, "fold")
     game.newCard("Thalen", 3, 5, "levego")
     game.newCard("Isara", 2, 6, "viz")
-    game.newCard("IsaraThalenKaell", 2, 6, "viz")
 
     game.newLeader("Torak","Lord Torak","sebzes")
     game.newLeader("Selia","Priestess Selia","eletero")
@@ -173,7 +172,6 @@ def create():
     user.addCard("Selia")
     user.addCard("Nerun")
     user.addCard("Torak")
-    user.addCard("IsaraThalenKaell")
 
 
     user.addCardToPack("Arin")

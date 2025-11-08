@@ -118,16 +118,19 @@ class CardSelectWrapper:
             pygame.draw.rect(screen,(255,255,0),(self.cardRect.x-selectedOffset//2,self.cardRect.y-selectedOffset//2,self.cardRect.w+selectedOffset,self.cardRect.h+selectedOffset),border_radius=10)
         pygame.draw.rect(screen,(255,0,0),self.cardRect,border_radius=10)
         if self.card.name.find(" ") >= 1:
-            screen.blit(self.title_render1, (self.cardRect.centerx-45, self.cardRect.top+11))
-            screen.blit(self.title_render2, (self.cardRect.centerx-35, self.cardRect.top+41))
+            if len(self.space_card_name1) <= 4:
+                screen.blit(self.title_render1, (self.cardRect.centerx-35, self.cardRect.top+11))
+            else:
+                screen.blit(self.title_render1, (self.cardRect.centerx-45, self.cardRect.top+11))
+            screen.blit(self.title_render2, (self.cardRect.centerx-35, self.cardRect.top+35))
         else:
             screen.blit(self.title_render, (self.cardRect.centerx-35, self.cardRect.top+11))
 
         screen.blit(self.stats_render, (self.cardRect.centerx-28, self.cardRect.centery-8))
-        if self.card.type == "levegő":
-            screen.blit(self.type_render, (self.cardRect.centerx-53, self.cardRect.centery+27))
+        if self.card.type == "levego":
+            screen.blit(self.type_render, (self.cardRect.centerx-55, self.cardRect.centery+27))
         else:
-            screen.blit(self.type_render, (self.cardRect.centerx-28, self.cardRect.centery+27))
+            screen.blit(self.type_render, (self.cardRect.centerx-30, self.cardRect.centery+27))
 
 
 def putInORtakeOut(card1:CardSelectWrapper, user:game.User):
