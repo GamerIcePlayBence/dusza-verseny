@@ -94,7 +94,7 @@ availableCards:list[Card] = []
 availableDungeons:list[Dungeon] = []
 
 def newCard(name:str, baseDmg:int, baseHp:int, cardType:str)->None:
-    outputCard:Card = Card(name,baseDmg,baseHp,cardType,False)
+    outputCard:Card = Card(name,int(baseDmg),int(baseHp),cardType,False)
     cardLookup[name] = len(availableCards)
     availableCards.append(outputCard)
 
