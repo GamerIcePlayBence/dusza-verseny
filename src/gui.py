@@ -18,10 +18,11 @@ putinortakeoutCARD = []
 
 def play_sound(typein):
     select_sound = pygame.mixer.Sound("src/sound/select_sound.wav")
+    cbb_sound = pygame.mixer.Sound("src/sound/click_back_button_sound.wav")
     if typein == "select":
-        select_sound.set_volume(0.3)
         select_sound.play()
-    pass
+    elif typein == "wood":
+        cbb_sound.play()
 
 def select_kazamata(screen, mode):
     pygame.display.set_caption("Kazamata választás")
@@ -130,7 +131,8 @@ def create():
     user.addCardToPack("Liora")
     user.addCardToPack("Selia")
 
-
+def backtodungeon():
+    play_sound("wood")
 
 def checkForCollision(scrollamount:int,rect:pygame.Rect, point:tuple)->bool:
     #check if it isn't in the same column:
@@ -200,6 +202,10 @@ def selectPackScreenEventHandler(event):
                     return
                 counter+=1
 
+            back_rect = pygame.Rect(0, 0, 120, 60)    
+            if back_rect.collidepoint(event.pos):
+                backtodungeon()
+
 def updateSelectPackScreen(screen,deltaTime:float,user,background):
     global scrollamount
     if cardlayer == None:
@@ -246,6 +252,11 @@ def updateSelectPackScreen(screen,deltaTime:float,user,background):
     else:
         screen.blit(background,(0,scrollamount))
     screen.blit(cardlayer,(0,scrollamount))
+
+    back_texture = pygame.image.load("src/img/Backarrow.png").convert_alpha()
+    back_rect = pygame.Rect(0, 0, 120, 60)
+    scaled_texture = pygame.transform.scale(back_texture, (back_rect.width, back_rect.height))
+    screen.blit(scaled_texture, back_rect.topleft)
 
 
 def drawCards(screen,background):
