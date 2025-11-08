@@ -154,6 +154,7 @@ def selectPackScreenEventHandler(event):
             counter = 0
             for card in cardsInPack:
                 if checkForCollision(scrollamount,card.cardRect,event.pos):
+                    play_sound("select")
                     putinortakeoutCARD.append(card)
                     return
                 counter+=1
@@ -161,6 +162,7 @@ def selectPackScreenEventHandler(event):
             counter = 0
             for card in cards:
                 if checkForCollision(scrollamount,card.cardRect,event.pos):
+                    play_sound("select")
                     putinortakeoutCARD.append(card)
                     return
                 counter+=1
@@ -185,6 +187,7 @@ def selectPackScreenEventHandler(event):
             counter = 0
             for card in cards:
                 if checkForCollision(scrollamount,card.cardRect,event.pos):
+                    play_sound("select")
                     card.selected = not card.selected
                     if card.selected:
                         selectedCards.append((1,counter))
