@@ -127,6 +127,10 @@ def select_kazamata(screen,background,deltaTime):
         card.draw(screen)
 
     pygame.draw.line(screen, (0, 0, 0), (0, 500), (1280, 500), width=10)
+    pygame.draw.rect(screen, (0,0,0), (1000, 0, 300, 60))
+    font = pygame.font.Font("src/font/Minister Std Bold.otf", 28)
+    font_render = font.render("MENU = 'KARTYA'", True, (255,255,255))
+    screen.blit(font_render, (1000, 15))
 
         #for i in range(len(game.availableDungeons[2].cards)):
         #    K_POS_X = 1050 - i*200
@@ -135,6 +139,8 @@ def select_kazamata(screen,background,deltaTime):
         #    pygame.draw.rect(screen, (0, 0, 0), K_Rect, width=4, border_radius=10)
     #Borders
 
+def backtokartya():
+    play_sound("wood")
 
 def kazamata_update(event):
     global mode
@@ -149,6 +155,8 @@ def kazamata_update(event):
         shiftFocus()
     if event.type == pygame.MOUSEBUTTONDOWN:
         if event.button == 1:
+            if pygame.Rect(1160, 0, 120, 60).collidepoint(event.pos):
+                backtokartya()
             for banner in dungeons:
                 if banner.cardRect.collidepoint(event.pos):
                     MENU = "FIGHT"

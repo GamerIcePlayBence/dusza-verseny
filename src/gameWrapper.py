@@ -68,8 +68,7 @@ class CardSelectWrapper:
             self.space_card_name2 = self.card.name.split(" ")[1]
             self.title_render1 = pygame.font.Font("src/font/Minister Std Bold.otf", 25-(len(self.space_card_name1)-6)).render( self.space_card_name1, True, (255,255,255))
             self.title_render2 = pygame.font.Font("src/font/Minister Std Bold.otf", 25-(len(self.space_card_name2)-6)).render(self.space_card_name2, True, (255,255,255))
-
-        self.title_render = pygame.font.Font("src/font/Minister Std Bold.otf", 25-(len(self.card.name)-6)).render( self.card.name, True, (255,255,255))
+            
         self.stats_render = self.font.render(str(self.card.baseDmg) + "/"+ str(self.card.baseHp), True, (255,255,255))
         self.type_render = self.font.render(self.card.type, True, (255,255,255))
 
