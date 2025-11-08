@@ -1,12 +1,14 @@
 import pygame
 from src import gameWrapper
 from src import game
+import time as Tm
 
 width, height = 1280, 720
 
 #FO = főmenü
 #KARTYA = kártya menü
-MENU = "FO"
+#HARC =  harc event
+MENU = "KARTYA"
 
 user = None
 
@@ -45,6 +47,40 @@ def play_sound(typein):
         select_sound.play()
     elif typein == "wood":
         cbb_sound.play()
+
+def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen):
+    ymargins = 10
+    margins = 10
+    output:str = game.fight(game.cardLookup[dungeon.name],user)
+
+    userCards:list[gameWrapper.CardSelectWrapper] = []
+    dungeonCards:list[gameWrapper.CardSelectWrapper] = []
+
+    screen.blit(background,(0,0))
+
+    percard = (margins*2+dungeonCharCardWidth)
+    xpos = width/2 - len(user.selected)*percard/2
+    dungeonxpos = width/2 - len(dungeon.cards)*percard/2
+
+    if len(userCards) == 0:
+        counter = 0
+        for index in user.selected:
+            card = user.cards[index]
+            userCards.append(gameWrapper.CardSelectWrapper(dungeonCharCardWidth,dungeonCharCardHeight,xpos+percard*counter+margins,height-ymargins-dungeonCharCardHeight,card))
+            counter+=1
+    if len(dungeonCards) == 0:
+        counter = 0
+        for name in dungeon.cards:
+            card = game.availableCards[game.cardLookup[name]]
+            userCards.append(gameWrapper.CardSelectWrapper(dungeonCharCardWidth,dungeonCharCardHeight,dungeonxpos+percard*counter+margins,ymargins,card))
+            counter+=1
+
+    for card in userCards:
+        card.draw(screen)
+    for card in dungeonCards:
+        card.draw(screen)
+
+    pygame.display.flip()
 
 def shiftFocus():
     global centered
@@ -93,6 +129,7 @@ def select_kazamata(screen,background,deltaTime):
 
 def kazamata_update(event):
     global mode
+    global MENU
     if event.type == pygame.MOUSEWHEEL:
         mode -= event.y
         if mode > len(dungeons)-1:
@@ -100,23 +137,28 @@ def kazamata_update(event):
         if mode < 0:
             mode = 0
         shiftFocus()
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.button == 1:
+            for banner in dungeons:
+                if banner.cardRect.collidepoint(event.pos):
+                    MENU = "FIGHT"
 
 
 def create():
-    game.newDungeon("Barlangi Portya", "Egyszerű kazamata", ["Nerun"], "sebzés")
-    game.newDungeon("Osi Szentely", "Kis kazamata", ["Arin", "Emera", "Selia", "Lord Torak"], "életerő")
+    game.newDungeon("Barlangi Portya", "Egyszerű kazamata", ["Nerun"], "sebzes")
+    game.newDungeon("Osi Szentely", "Kis kazamata", ["Arin", "Emera", "Selia", "Lord Torak"], "eletero")
     game.newDungeon("A melyseg kiralynoje", "Nagy kazamata", ["Liora", "Arin", "Selia", "Nerun", "Torak", "Priestess Selia"], "")
 
-    game.newCard("Arin", 2, 5, "föld")
-    game.newCard("Liora", 2, 4, "levegő")
-    game.newCard("Selia", 2, 6, "víz")
-    game.newCard("Nerun", 3, 3, "tűz")
-    game.newCard("Torak", 3, 4, "föld")
-    game.newCard("Emera", 2, 5, "levegő")
-    game.newCard("Kael", 3, 5, "tűz")
-    game.newCard("Myra", 3, 6, "föld")
-    game.newCard("Thalen", 3, 5, "levegő")
-    game.newCard("Isara", 2, 6, "víz")
+    game.newCard("Arin", 2, 5, "fold")
+    game.newCard("Liora", 2, 4, "levego")
+    game.newCard("Selia", 2, 6, "viz")
+    game.newCard("Nerun", 3, 3, "tuz")
+    game.newCard("Torak", 3, 4, "fold")
+    game.newCard("Emera", 2, 5, "levego")
+    game.newCard("Kael", 3, 5, "tuz")
+    game.newCard("Myra", 3, 6, "fold")
+    game.newCard("Thalen", 3, 5, "levego")
+    game.newCard("Isara", 2, 6, "viz")
 
     game.newLeader("Torak","Lord Torak","sebzes")
     game.newLeader("Selia","Priestess Selia","eletero")
@@ -137,7 +179,9 @@ def create():
     user.addCardToPack("Selia")
 
 def backtodungeon():
+    global MENU
     play_sound("wood")
+    MENU="FO"
 
 def checkForCollision(scrollamount:int,rect:pygame.Rect, point:tuple)->bool:
     #check if it isn't in the same column:
@@ -332,6 +376,9 @@ def drawCards(screen,background):
 
 def UIMain():
     create()
+    if user == None:
+        print("Couldnt initialize user")
+        return
     pygame.init()
     background = pygame.image.load("./src/img/BG.jpg")
     background = pygame.transform.scale(background,(width,height))
@@ -350,7 +397,7 @@ def UIMain():
                 running = False
             if MENU == "FO":
                 kazamata_update(event)
-            else:
+            elif MENU == "KARTYA":
                 selectPackScreenEventHandler(event)
 
         fps = clock.get_fps()
@@ -359,8 +406,10 @@ def UIMain():
         deltaTime:float = 1/fps
         if MENU == "FO":
             select_kazamata(screen,background,deltaTime)
-        else:
+        elif MENU == "KARTYA":
             updateSelectPackScreen(screen,deltaTime,user,background)
+        else:
+            fightEvent(dungeons[mode].dungeon,user,background,screen)
 
         pygame.display.flip()
         clock.tick(120)
