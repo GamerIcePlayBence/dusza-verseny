@@ -9,7 +9,9 @@ user = None
 
 #card selection menu
 cardlayer = None
+cardBG = (120,125,20)
 scrollamount = 0
+linepoint = 0
 cardsInPack:list[gameWrapper.CardSelectWrapper] = []
 cards:list[gameWrapper.CardSelectWrapper] = []
 
@@ -131,6 +133,15 @@ def create():
         user.addCardToPack(str(i)+"TEST")
 
 
+def checkForCollision(scrollamount:int,rect:pygame.Rect, point:tuple)->bool:
+    #check if it isn't in the same column:
+    if point[0] <= rect.x or rect.x+rect.w <= point[0]:
+        return False
+    #check if it isn't in the same row:
+    if point[1] <= rect.y+scrollamount or rect.y+rect.h+scrollamount <= point[1]:
+        return False
+    return True
+
 def selectPackScreenEventHandler(event):
     global scrollamount
     scrollspeed = 14
@@ -138,17 +149,16 @@ def selectPackScreenEventHandler(event):
         scrollamount += event.y*scrollspeed
         if scrollamount > 0:
             scrollamount = 0
-    if event.type == pygame.MOUSEBUTTONDOWN:
-        for card in cardsInPack:
-            if card.cardRect.collidepoint(event.pos):
-                print("card clicked")
-                card.select()
-                return
-        for card in cards:
-            if card.cardRect.collidepoint(event.pos):
-                print("card clicked")
-                card.select()
-                return
+    elif event.type == pygame.MOUSEBUTTONDOWN:
+        if event.button == 1:
+            for card in cardsInPack:
+                if checkForCollision(scrollamount,card.cardRect,event.pos):
+                    card.select()
+                    return
+            for card in cards:
+                if checkForCollision(scrollamount,card.cardRect,event.pos):
+                    card.select()
+                    return
 
 def updateSelectPackScreen(screen,deltaTime:float):
     global scrollamount
@@ -157,6 +167,16 @@ def updateSelectPackScreen(screen,deltaTime:float):
         return
     if abs(scrollamount) > cardlayer.get_height()-height:
         scrollamount = -(cardlayer.get_height()-height)
+
+    cardlayer.fill(cardBG)
+
+    pygame.draw.line(cardlayer,(255,255,255),(0,linepoint),(width,linepoint))
+
+    for card in cardsInPack:
+        pygame.draw.rect(cardlayer,(0,125,125),card.cardRect,border_radius=3)
+    for card in cards:
+        pygame.draw.rect(cardlayer,(125,125,125),card.cardRect,border_radius=3)
+
     screen.blit(cardlayer,(0,scrollamount))
 
 def startselectPackScreen(screen):
@@ -171,6 +191,8 @@ def startselectPackScreen(screen):
     rows = len(user.selected)//colcount
     ypos = (cardheight+margin*2)*(rows + 1)
 
+    global linepoint
+    linepoint = ypos
 
 
     if len(cardsInPack) == 0 and len(user.selected) != 0:
@@ -206,7 +228,7 @@ def startselectPackScreen(screen):
 
 
     cardlayer = pygame.Surface((width,(rows+len(user.cards)//colcount)*(margin*2+cardheight)))
-    cardlayer.fill((125,122,30))
+    cardlayer.fill(cardBG)
 
     pygame.draw.line(cardlayer,(255,255,255),(0,ypos),(width,ypos))
 
