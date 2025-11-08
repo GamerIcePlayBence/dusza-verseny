@@ -10,7 +10,6 @@ user = None
 #első, az hogy melyik listában van (0=pack;1=gyüjtemény) második, hogy hanyadik
 selectedCards:list[tuple[int,int]] = []
 cardlayer = None
-cardBG = (120,125,20)
 scrollamount = 0
 linepoint = 0
 cardsInPack:list[gameWrapper.CardSelectWrapper] = []
@@ -190,7 +189,7 @@ def selectPackScreenEventHandler(event):
                     return
                 counter+=1
 
-def updateSelectPackScreen(screen,deltaTime:float,user):
+def updateSelectPackScreen(screen,deltaTime:float,user,background):
     global scrollamount
     if cardlayer == None:
         print("Couldn't initialize card layer")
@@ -198,17 +197,18 @@ def updateSelectPackScreen(screen,deltaTime:float,user):
     if abs(scrollamount) > cardlayer.get_height()-height:
         scrollamount = -(cardlayer.get_height()-height)
 
-    cardlayer.fill(cardBG)
+    cardlayer.fill((0,0,0,0))
     pygame.draw.line(cardlayer,(255,255,255),(0,linepoint),(width,linepoint))
 
     if len(putinortakeoutCARD) > 0:
         if (len(cardsInPack) == 1 and not putinortakeoutCARD[0] in cardsInPack) or \
                 (len(cardsInPack) > 1):
             gameWrapper.putInORtakeOut(putinortakeoutCARD[0],user)
-            putinortakeoutCARD.clear()
             cardsInPack.clear()
             cards.clear()
-            drawCards(screen)
+            drawCards(screen,background)
+        putinortakeoutCARD.clear()
+
 
     if len(selectedCards)>=2:
         if selectedCards[0][0] == 0:
@@ -230,11 +230,16 @@ def updateSelectPackScreen(screen,deltaTime:float,user):
         card.update(deltaTime)
         card.draw(cardlayer)
 
+    if background == None:
+        screen.fill((0,0,0))
+    else:
+        screen.blit(background,(0,scrollamount))
     screen.blit(cardlayer,(0,scrollamount))
 
 
-def drawCards(screen):
+def drawCards(screen,background):
     global cardlayer
+    global linepoint
     margin = 10
     colcount:int = 10
     cardwidth:int = int(width/colcount-margin*2)
@@ -245,7 +250,6 @@ def drawCards(screen):
     rows = len(user.selected)//colcount
     ypos = (cardheight+margin*2)*(rows + 1)
 
-    global linepoint
     linepoint = ypos
 
 
@@ -284,9 +288,9 @@ def drawCards(screen):
         cardlayerheight = (rows+len(user.cards)//colcount)*(margin*2+cardheight)
         if cardlayerheight < height:
             cardlayerheight = height
-        cardlayer = pygame.Surface((width,cardlayerheight))
-    cardlayer.fill(cardBG)
+        cardlayer = pygame.Surface((width,cardlayerheight),pygame.SRCALPHA)
 
+    cardlayer.fill((0,0,0,0))
     pygame.draw.line(cardlayer,(255,255,255),(0,ypos),(width,ypos))
 
     for card in cardsInPack:
@@ -294,6 +298,7 @@ def drawCards(screen):
     for card in cards:
         card.draw(cardlayer)
 
+    screen.blit(background,(0,0))
     screen.blit(cardlayer,(0,0))
 
 
@@ -301,12 +306,15 @@ def drawCards(screen):
 def UIMain():
     create()
     pygame.init()
+    background = pygame.image.load("./src/img/BG.jpg")
+    background = pygame.transform.scale(background,(width,height))
+
     screen = pygame.display.set_mode((width, height))
     screen.fill((255, 255, 255))
     running = True
     clock:pygame.time.Clock = pygame.time.Clock()
 
-    drawCards(screen)
+    drawCards(screen,background)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -317,7 +325,7 @@ def UIMain():
         if fps == 0:
             fps = 0.00001
         deltaTime:float = 1/fps
-        updateSelectPackScreen(screen,deltaTime,user)
+        updateSelectPackScreen(screen,deltaTime,user,background)
         pygame.display.flip()
         clock.tick(120)
     pygame.quit()
