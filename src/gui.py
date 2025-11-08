@@ -16,6 +16,13 @@ cardsInPack:list[gameWrapper.CardSelectWrapper] = []
 cards:list[gameWrapper.CardSelectWrapper] = []
 putinortakeoutCARD = []
 
+def play_sound(typein):
+    select_sound = pygame.mixer.Sound("src/sound/select_sound.wav")
+    if typein == "select":
+        select_sound.set_volume(0.3)
+        select_sound.play()
+    pass
+
 def select_kazamata(screen, mode):
     pygame.display.set_caption("Kazamata választás")
     screen.fill((255, 255, 255))
@@ -146,6 +153,7 @@ def selectPackScreenEventHandler(event):
             counter = 0
             for card in cardsInPack:
                 if checkForCollision(scrollamount,card.cardRect,event.pos):
+                    play_sound("select")
                     putinortakeoutCARD.append(card)
                     return
                 counter+=1
@@ -153,6 +161,7 @@ def selectPackScreenEventHandler(event):
             counter = 0
             for card in cards:
                 if checkForCollision(scrollamount,card.cardRect,event.pos):
+                    play_sound("select")
                     putinortakeoutCARD.append(card)
                     return
                 counter+=1
@@ -160,6 +169,7 @@ def selectPackScreenEventHandler(event):
             counter = 0
             for card in cardsInPack:
                 if checkForCollision(scrollamount,card.cardRect,event.pos):
+                    play_sound("select")
                     card.selected = not card.selected
                     if card.selected:
                         selectedCards.append((0,counter))
@@ -176,6 +186,7 @@ def selectPackScreenEventHandler(event):
             counter = 0
             for card in cards:
                 if checkForCollision(scrollamount,card.cardRect,event.pos):
+                    play_sound("select")
                     card.selected = not card.selected
                     if card.selected:
                         selectedCards.append((1,counter))
@@ -309,6 +320,7 @@ def UIMain():
     background = pygame.image.load("./src/img/BG.jpg")
     background = pygame.transform.scale(background,(width,height))
 
+    pygame.mixer.init()
     screen = pygame.display.set_mode((width, height))
     screen.fill((255, 255, 255))
     running = True
