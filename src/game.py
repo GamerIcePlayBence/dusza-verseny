@@ -103,9 +103,9 @@ def newLeader(srcName:str, finName:str, creationType:str)->None:
         if character.name == srcName:
             cardLookup[finName] = len(availableCards)
             if(creationType=="sebzes"):
-                availableCards.append(Card(finName,character.baseDmg*2,character.baseHp,character.type,True))
+                availableCards.append(Card(finName,int(character.baseDmg)*2,int(character.baseHp),character.type,True))
             else:
-                availableCards.append(Card(finName,character.baseDmg,character.baseHp*2,character.type,True))
+                availableCards.append(Card(finName,int(character.baseDmg),int(character.baseHp)*2,character.type,True))
             break
 
 
