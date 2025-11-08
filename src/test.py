@@ -34,7 +34,18 @@ def TESTMain(test_dir_path):
                     elif row.startswith("felvetel gyujtemenybe"):
                         user.addCard(character[1])
                     elif row.startswith("uj pakli"):
-                        pass
+                            if len(user.cards) % 2 == 0:
+                                 mkp = len(user.cards) / 2
+                            else:
+                                mkp = len(user.cards) + 1
+                            mkp = int(mkp)
+                            pack_k = character[1].split(",")
+                            if len(pack_k) <= mkp:
+                                for pack_k2 in pack_k:
+                                    user.addCardToPack(pack_k2)
+                                kereses = True
+                            else:
+                                kereses = False
         if not kereses:
             print("Hibás in.txt fálj!")
         pass
