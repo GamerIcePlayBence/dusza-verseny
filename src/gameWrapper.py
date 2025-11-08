@@ -57,6 +57,11 @@ class CardSelectWrapper:
         self.card:game.Card = card
         self.selected = False
 
+        #self.card_texture = pygame.image.load("src/img/card.png").convert_alpha()
+        #self.card_scaled_texture = pygame.transform.scale(self.card_texture, (self.cardRect.width, self.cardRect.height))
+        self.title_font = pygame.font.Font("src/font/Minister Std Bold.otf", 25-(len(self.card.name)-6))
+        self.title = self.title_font.render(self.card.name, True, (255,255,255))
+
     def update(self,deltaTime):
         if self.destPos == (-1,-1):
             return 
@@ -96,10 +101,13 @@ class CardSelectWrapper:
                     self.speed = (self.speed[0],-1)
             self.cardRect.y = int(self.pos[1])
 
+
     def draw(self,screen):
         if self.selected:
             pygame.draw.rect(screen,(255,255,0),(self.cardRect.x-selectedOffset//2,self.cardRect.y-selectedOffset//2,self.cardRect.w+selectedOffset,self.cardRect.h+selectedOffset),border_radius=10)
         pygame.draw.rect(screen,(255,0,0),self.cardRect,border_radius=10)
+        #screen.blit(self.card_scaled_texture, self.cardRect.topleft)
+        screen.blit(self.title, (self.cardRect.centerx-35, self.cardRect.top+11))
 
 
 def putInORtakeOut(card1:CardSelectWrapper, user:game.User):
