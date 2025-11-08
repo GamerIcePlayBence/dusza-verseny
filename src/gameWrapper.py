@@ -61,6 +61,24 @@ class CardSelectWrapper:
         pygame.draw.rect(screen,(255,0,0),self.cardRect,border_radius=10)
 
 
+def putInORtakeOut(card1:CardSelectWrapper, user:game.User):
+    card1index = user.cardNames[card1.card.name]
+
+    card1inselected = -1
+
+    counter = 0
+    for index in user.selected:
+        if index == card1index:
+            card1inselected = counter
+            break
+        counter +=1
+
+    # the card has to be put in
+    if card1inselected < 0:
+        user.addCardToPack(card1.card.name)
+    else:
+        user.removeCardFromPack(card1.card.name)
+
 def swapCards(card1:CardSelectWrapper, card2:CardSelectWrapper, user:game.User):
     card1.destPos = (card2.cardRect.x,card2.cardRect.y)
     card2.destPos = (card1.cardRect.x,card1.cardRect.y)
