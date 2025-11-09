@@ -5,7 +5,6 @@ class SwordAnim:
     def __init__(self,width,height):
         self.width = width
         self.height = height
-        self.frame = 0
         self.pic = pygame.image.load("./src/img/sword.png").convert_alpha()
         self.pic = pygame.transform.scale_by(self.pic,1.75)
         self.finalangle = 60
@@ -36,3 +35,38 @@ class SwordAnim:
         if self.innerclock >= self.animtime:
             self.done = True
         self.innerclock+=deltaTime
+
+class Projectileanim:
+    def __init__(self,width,height):
+        self.width = width
+        self.height = height
+        self.y = 0
+        self.startx = 0
+        self.pic = pygame.image.load("./src/img/projectile.png").convert_alpha()
+        #self.pic = pygame.transform.scale_by(self.pic,1.75)
+        self.animtime = 2
+        self.innerclock:float = 0
+        self.done = True
+        self.distance = 0
+
+    def _animtiming(self)->float:
+        return self.innerclock**2*(self.distance/(self.animtime**2))
+
+    def playAnim(self,deltaTime,screen):
+        transformed = self.pic
+        if self.distance < 0:
+            transformed = pygame.transform.flip(transformed,True,False)
+
+        rect = transformed.get_rect()
+        rect.x = int(self.startx + self._animtiming())
+        rect.y = int(self.y-rect.h/2)
+
+        if self.distance < 0:
+            rect.x -= rect.w
+
+        screen.blit(transformed,(rect))
+
+        if self.innerclock >= self.animtime:
+            self.done = True
+        self.innerclock+=deltaTime
+
