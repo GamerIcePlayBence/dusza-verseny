@@ -147,9 +147,11 @@ def kazamata_update(event):
     global MENU
     if event.type == pygame.MOUSEWHEEL:
         mode -= event.y
-        play_sound("scroll")
+        print(mode)
         if mode > len(dungeons)-1:
             mode = len(dungeons)-1
+        elif mode < 3 and mode > -1:
+            play_sound("scroll")
         if mode < 0:
             mode = 0
         shiftFocus()
