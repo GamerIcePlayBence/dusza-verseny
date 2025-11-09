@@ -481,8 +481,13 @@ def updateSelectPackScreen(screen,deltaTime:float,user,background):
     pygame.draw.line(cardlayer,(255,255,255),(0,linepoint),(width,linepoint))
 
     if len(putinortakeoutCARD) > 0:
-        if (len(cardsInPack) == 1 and not putinortakeoutCARD[0] in cardsInPack) or \
-                (len(cardsInPack) > 1):
+        if len(cards) % 2 == 0:
+            mkp = len(cards) / 2
+        else:
+            mkp = len(cards) + 1
+        mkp = int(mkp)
+        if ((len(cardsInPack) == 1 and not putinortakeoutCARD[0] in cardsInPack) or \
+                (len(cardsInPack) > 1)) and (len(cardsInPack) < mkp or putinortakeoutCARD[0] in cardsInPack):
             gameWrapper.putInORtakeOut(putinortakeoutCARD[0],user)
             cardsInPack.clear()
             cards.clear()
