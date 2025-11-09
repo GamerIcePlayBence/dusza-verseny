@@ -20,6 +20,9 @@ class DungeonSelectWrapper:
 
         self.title_render1 = ""
         self.title_render2 = ""
+        self.stat_render = pygame.font.Font("src/font/Minister Std Bold.otf", 20).render( "Nyeremény: " + self.dungeon.reward, True, (255,255,255))
+        if self.dungeon.reward == "":
+            self.stat_render = pygame.font.Font("src/font/Minister Std Bold.otf", 20).render( "Nyeremény: (+) Kártya" + self.dungeon.reward, True, (255,255,255))
         if self.dungeon.name.count(" ") >= 1 and self.dungeon.name.count(" ") < 2:
             self.space_dungeon_name1 = self.dungeon.name.split(" ")[0]
             self.space_dungeon_name2 = self.dungeon.name.split(" ")[1]
@@ -67,6 +70,12 @@ class DungeonSelectWrapper:
             elif self.dungeon.name.count(" ") == 2:
                 screen.blit(self.title_render1, (self.cardRect.centerx-140+len(self.dungeon.name)*5, self.cardRect.centery-150))
                 screen.blit(self.title_render2, (self.cardRect.centerx-270+len(self.dungeon.name)*5, self.cardRect.centery-50))
+            self.stat_render = pygame.font.Font("src/font/Minister Std Bold.otf", 30).render( "Nyeremény: " + self.dungeon.reward, True, (255,255,255))
+            if self.dungeon.reward == "":
+                self.stat_render = pygame.font.Font("src/font/Minister Std Bold.otf", 30).render( "Nyeremény: (+) Kártya" + self.dungeon.reward, True, (255,255,255))
+                screen.blit(self.stat_render, (self.cardRect.centerx-170, self.cardRect.centery+80))
+            else:
+                screen.blit(self.stat_render, (self.cardRect.centerx-150, self.cardRect.centery+80))
 
         else:
             pygame.draw.rect(screen,(255,0,0),self.cardRect,border_radius=10)
@@ -76,6 +85,13 @@ class DungeonSelectWrapper:
             elif self.dungeon.name.count(" ") == 2:
                 screen.blit(self.title_render1k, (self.cardRect.centerx-120+len(self.dungeon.name)*5, self.cardRect.centery-50))
                 screen.blit(self.title_render2k, (self.cardRect.centerx-215+len(self.dungeon.name)*5, self.cardRect.centery))
+
+            self.stat_render = pygame.font.Font("src/font/Minister Std Bold.otf", 20).render( "Nyeremény: " + self.dungeon.reward, True, (255,255,255))
+            if self.dungeon.reward == "":
+                self.stat_render = pygame.font.Font("src/font/Minister Std Bold.otf", 20).render( "Nyeremény: (+) Kártya" + self.dungeon.reward, True, (255,255,255))
+                screen.blit(self.stat_render, (self.cardRect.centerx-110, self.cardRect.centery+100))
+            else:
+                screen.blit(self.stat_render, (self.cardRect.centerx-100, self.cardRect.centery+100))
 
 class CardSelectWrapper:
     def __init__(self, width:float, height:float, x:float, y:float, card:game.Card):
@@ -243,8 +259,6 @@ def swapCards(card1:CardSelectWrapper, card2:CardSelectWrapper, user:game.User):
         else:
             user.selected[card1inselected] = card2index
             user.selected[card2inselected] = card1index
-
-    print(user.selected)
 
 
 
