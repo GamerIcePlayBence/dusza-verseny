@@ -490,7 +490,6 @@ def UIMain():
         print("Couldnt initialize user")
         return
     pygame.init()
-    pygame.display.init()
     background = pygame.image.load("./src/img/BG.jpg")
     background = pygame.transform.scale(background,(width,height))
 
