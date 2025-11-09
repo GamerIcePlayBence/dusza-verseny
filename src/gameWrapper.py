@@ -18,6 +18,22 @@ class DungeonSelectWrapper:
         self.dungeon:game.Dungeon = dungeon
         self.selected = False
 
+        self.title_render1 = ""
+        self.title_render2 = ""
+        if self.dungeon.name.count(" ") >= 1 and self.dungeon.name.count(" ") < 2:
+            self.space_dungeon_name1 = self.dungeon.name.split(" ")[0]
+            self.space_dungeon_name2 = self.dungeon.name.split(" ")[1]
+            self.title_render1 = pygame.font.Font("src/font/Minister Std Bold.otf", 60).render( self.space_dungeon_name1, True, (255,255,255))
+            self.title_render2 = pygame.font.Font("src/font/Minister Std Bold.otf", 60).render(self.space_dungeon_name2, True, (255,255,255))
+            self.title_render1k = pygame.font.Font("src/font/Minister Std Bold.otf", 30).render( self.space_dungeon_name1, True, (255,255,255))
+            self.title_render2k = pygame.font.Font("src/font/Minister Std Bold.otf", 30).render(self.space_dungeon_name2, True, (255,255,255))
+        elif self.dungeon.name.count(" ") == 2:
+            self.space_dungeon_name1 = self.dungeon.name.split(" ")[0]
+            self.space_dungeon_name2 = self.dungeon.name.split(" ")[1] + " " + self.dungeon.name.split(" ")[2]
+            self.title_render1 = pygame.font.Font("src/font/Minister Std Bold.otf", 60).render( self.space_dungeon_name1, True, (255,255,255))
+            self.title_render2 = pygame.font.Font("src/font/Minister Std Bold.otf", 37).render(self.space_dungeon_name2, True, (255,255,255))
+            self.title_render1k = pygame.font.Font("src/font/Minister Std Bold.otf", 30).render( self.space_dungeon_name1, True, (255,255,255))
+            self.title_render2k = pygame.font.Font("src/font/Minister Std Bold.otf", 26).render(self.space_dungeon_name2, True, (255,255,255))
 
     def update(self,deltaTime):
         if self.destPos == -1:
@@ -45,8 +61,21 @@ class DungeonSelectWrapper:
         widthoffset = self.cardRect.w*selectedDungonOffset
         if self.selected:
             pygame.draw.rect(screen,(255,0,0),(self.cardRect.x-widthoffset//2,self.cardRect.y-widthoffset,self.cardRect.w+widthoffset,self.cardRect.h+widthoffset),border_radius=10)
+            if self.dungeon.name.count(" ") >= 1 and self.dungeon.name.count(" ") < 2:
+                screen.blit(self.title_render1, (self.cardRect.centerx-200+len(self.dungeon.name)*5, self.cardRect.centery-150))
+                screen.blit(self.title_render2, (self.cardRect.centerx-200+len(self.dungeon.name)*5, self.cardRect.centery-50))
+            elif self.dungeon.name.count(" ") == 2:
+                screen.blit(self.title_render1, (self.cardRect.centerx-140+len(self.dungeon.name)*5, self.cardRect.centery-150))
+                screen.blit(self.title_render2, (self.cardRect.centerx-270+len(self.dungeon.name)*5, self.cardRect.centery-50))
+
         else:
             pygame.draw.rect(screen,(255,0,0),self.cardRect,border_radius=10)
+            if self.dungeon.name.count(" ") >= 1 and self.dungeon.name.count(" ") < 2:
+                screen.blit(self.title_render1k, (self.cardRect.centerx-140+len(self.dungeon.name)*5, self.cardRect.centery-50))
+                screen.blit(self.title_render2k, (self.cardRect.centerx-140+len(self.dungeon.name)*5, self.cardRect.centery))
+            elif self.dungeon.name.count(" ") == 2:
+                screen.blit(self.title_render1k, (self.cardRect.centerx-120+len(self.dungeon.name)*5, self.cardRect.centery-50))
+                screen.blit(self.title_render2k, (self.cardRect.centerx-215+len(self.dungeon.name)*5, self.cardRect.centery))
 
 class CardSelectWrapper:
     def __init__(self, width:float, height:float, x:float, y:float, card:game.Card):
