@@ -23,6 +23,8 @@ output:list[str] = []
 swordanim = None
 waittime = 0.5
 fightclock = 0
+endscreen = False
+endfightclock = 1
 
 #dungeon selection menu
 mode = 0
@@ -71,11 +73,13 @@ def play_sound(typein):
 
 def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:float):
     global turn
+    global endscreen
     global isPlayerMove
     global dungeonCardOut
     global playerCardOut
     global output
     global fightclock
+    global endfightclock
     global MENU
 
     ymargins = 10
@@ -169,34 +173,42 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
             isPlayerMove = not isPlayerMove
             turn+=1
     else:
-        print(currThing)
-        if currThing[0].split(' ')[1] == "nyert":
-            if currThing[1] == "sebzes":
-                user.cards[user.cardNames[currThing[2]]].baseDmg = user.cards[user.cardNames[currThing[2]]].baseDmg + 1
-            elif currThing[1] == "eletero":
-                user.cards[user.cardNames[currThing[2]]].baseHp = user.cards[user.cardNames[currThing[2]]].baseHp + 2
-            else:
-                user.addCard(currThing[1])
-        dungeonCards.clear()
-        userCards.clear()
-        turn=0
-        isPlayerMove=False
-        playerCardOut = 0
-        dungeonCardOut = 0
-        output.clear()
-        fightclock = 0
-        if swordanim != None:
-            swordanim.done=False
-            swordanim.innerclock = 0
-        MENU = "FO"
+        if waittime < endfightclock:
+            img = pygame.image.load("./src/img/WON.png")
+            img = pygame.transform.scale_by(img,2)
+            endscreen = True
+            screen.blit(img, (0,0))
+            print(currThing)
+            if currThing[0].split(' ')[1] == "nyert":
+                if currThing[1] == "sebzes":
+                    user.cards[user.cardNames[currThing[2]]].baseDmg = user.cards[user.cardNames[currThing[2]]].baseDmg + 1
+                elif currThing[1] == "eletero":
+                    user.cards[user.cardNames[currThing[2]]].baseHp = user.cards[user.cardNames[currThing[2]]].baseHp + 2
+                else:
+                    user.addCard(currThing[1])
+            dungeonCards.clear()
+            userCards.clear()
+            turn=0
+            isPlayerMove=False
+            playerCardOut = 0
+            dungeonCardOut = 0
+            output.clear()
+            if not endscreen:
+                fightclock = 0
+                if swordanim != None:
+                    swordanim.done=False
+                    swordanim.innerclock = 0
+        else:
+            endfightclock+= deltaTime
 
 
-    for card in userCards:
-        card.update(deltaTime,1.5)
-        card.draw(screen)
-    for card in dungeonCards:
-        card.update(deltaTime,1.5)
-        card.draw(screen)
+    if not endscreen:
+        for card in userCards:
+            card.update(deltaTime,1.5)
+            card.draw(screen)
+        for card in dungeonCards:
+            card.update(deltaTime,1.5)
+            card.draw(screen)
 
     pygame.display.flip()
 
