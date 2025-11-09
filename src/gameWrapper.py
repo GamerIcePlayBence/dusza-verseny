@@ -96,8 +96,8 @@ class CardSelectWrapper:
             self.space_card_name1 = self.card.name.split(" ")[0]
             self.space_card_name2 = self.card.name.split(" ")[1]
             if len(self.space_card_name1) > 4:
-                self.title_render1 = pygame.font.Font("src/font/Minister Std Bold.otf", 20).render( self.space_card_name1, True, (255,255,255))
-                self.title_render2 = pygame.font.Font("src/font/Minister Std Bold.otf", 20).render(self.space_card_name2, True, (255,255,255))
+                self.title_render1 = pygame.font.Font("src/font/Minister Std Bold.otf", 19).render( self.space_card_name1, True, (255,255,255))
+                self.title_render2 = pygame.font.Font("src/font/Minister Std Bold.otf", 19).render(self.space_card_name2, True, (255,255,255))
             else:
                 self.title_render1 = pygame.font.Font("src/font/Minister Std Bold.otf", 25).render( self.space_card_name1, True, (255,255,255))
                 self.title_render2 = pygame.font.Font("src/font/Minister Std Bold.otf", 25).render(self.space_card_name2, True, (255,255,255))
@@ -173,7 +173,7 @@ class CardSelectWrapper:
             if len(self.space_card_name1) <= 4:
                 screen.blit(self.title_render1, (self.cardRect.centerx-35, self.cardRect.top+11))
             else:
-                screen.blit(self.title_render1, (self.cardRect.centerx-45, self.cardRect.top+11))
+                screen.blit(self.title_render1, (self.cardRect.centerx-41, self.cardRect.top+11))
             screen.blit(self.title_render2, (self.cardRect.centerx-35, self.cardRect.top+45))
         else:
             screen.blit(self.title_render, (self.cardRect.centerx-35, self.cardRect.top+11))
