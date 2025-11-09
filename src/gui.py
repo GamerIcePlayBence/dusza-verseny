@@ -193,6 +193,8 @@ def shiftFocus():
         counter+=1
 
 def select_kazamata(screen,background,deltaTime):
+    selectedCards.clear()
+    putinortakeoutCARD.clear()
     if len(dungeons) == 0:
         counter = 1
         for dungeon in game.availableDungeons:
@@ -428,6 +430,8 @@ def drawCards(screen,background):
     global cardlayer
     global linepoint
     pygame.display.set_caption("Kártyáid")
+    selectedCards.clear()
+    putinortakeoutCARD.clear()
     margin = 10
     colcount:int = 10
     cardwidth:int = int(width/colcount-margin*2)
