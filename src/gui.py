@@ -57,7 +57,7 @@ def play_sound(typein):
     select_sound = pygame.mixer.Sound(path + "select_sound.wav")
     cbb_sound = pygame.mixer.Sound(path + "click_back_button_sound.wav")
     scroll_sound = pygame.mixer.Sound(path + "scroll.wav")
-    letsgo_sound = pygame.mixer.Sound(path + "letgo.wav")
+    fight_sound = pygame.mixer.Sound(path + "fight.wav")
     if typein == "select":
         select_sound.play()
     elif typein == "wood":
@@ -65,9 +65,9 @@ def play_sound(typein):
     elif typein == "scroll":
         scroll_sound.set_volume(0.3)
         scroll_sound.play()
-    elif typein == "letsgo":
-        letsgo_sound.set_volume(0.2)
-        letsgo_sound.play()
+    elif typein == "fight":
+        fight_sound.set_volume(0.2)
+        fight_sound.play()
 
 def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:float):
     global turn
@@ -275,7 +275,7 @@ def kazamata_update(event):
                 if banner.cardRect.collidepoint(event.pos):
                     pygame.display.set_caption("Harc")
                     MENU = "FIGHT"
-                    play_sound("letsgo")
+                    play_sound("fight")
 
 
 def create():
