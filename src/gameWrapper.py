@@ -155,7 +155,6 @@ class CardSelectWrapper:
     def draw(self,screen):
         if self.selected:
             pygame.draw.rect(screen,(255,255,0),(self.cardRect.x-selectedOffset//2,self.cardRect.y-selectedOffset//2,self.cardRect.w+selectedOffset,self.cardRect.h+selectedOffset),border_radius=10)
-        pygame.draw.rect(screen,(255,0,0),self.cardRect,border_radius=10)
 
 
         if self.card.type == "viz":
