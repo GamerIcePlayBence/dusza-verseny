@@ -260,7 +260,5 @@ def swapCards(card1:CardSelectWrapper, card2:CardSelectWrapper, user:game.User):
             user.selected[card1inselected] = card2index
             user.selected[card2inselected] = card1index
 
-    print(user.selected)
-
 
 

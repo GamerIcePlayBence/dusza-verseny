@@ -209,7 +209,6 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
 
     if len(currThing)>=3 and currThing[2] == 'kijatszik':
         if currThing[0] == '1.kor':
-            print(currThing)
             if isPlayerMove:
                 userCards[0].destPos = (margins,height/2-dungeonCharCardHeight/2)
             else:
@@ -218,9 +217,6 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
             isPlayerMove = not isPlayerMove
         else:
             if userCards[playerCardOut].destPos == (-1,-1) and dungeonCards[dungeonCardOut].destPos == (-1,-1):
-                print(currThing)
-                print(playerCardOut)
-                print(dungeonCardOut)
                 if isPlayerMove:
                     userCards[playerCardOut+1].destPos = (margins,height/2-dungeonCharCardHeight/2)
                     playerCardOut+=1
@@ -231,7 +227,6 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
                 turn+=1
     elif len(currThing)>=3 and currThing[2] == 'tamad':
         if userCards[playerCardOut].destPos == (-1,-1) and dungeonCards[dungeonCardOut].destPos == (-1,-1):
-            print(currThing)
             if isPlayerMove:
                 if projanim != None:
                     projanim.done = False
