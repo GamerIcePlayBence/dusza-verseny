@@ -17,6 +17,7 @@ projanim:anim.Projectileanim | None = None
 userCards:list[gameWrapper.CardSelectWrapper] = []
 dungeonCards:list[gameWrapper.CardSelectWrapper] = []
 turn=0
+title_render = None
 isPlayerMove=False
 playerCardOut = 0
 dungeonCardOut = 0
@@ -109,6 +110,7 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
     global WONIMG
     global LOSTIMG
     global turn
+    global title_render
     global endscreen
     global isPlayerMove
     global dungeonCardOut
@@ -257,21 +259,15 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
                 if currThing[0].split(' ')[1] == "nyert":
                     if currThing[1] == "sebzes":
                         user.cards[user.cardNames[currThing[2]]].baseDmg = int(user.cards[user.cardNames[currThing[2]]].baseDmg) + 1
+                        title_render = pygame.font.Font("src/font/Minister Std Bold.otf", 40).render("Nyereményed: (+1Dmg) " + user.cards[user.cardNames[currThing[2]]].name + " (" + str(user.cards[user.cardNames[currThing[2]]].baseDmg) + ")", True, (219, 163, 74))
                     elif currThing[1] == "eletero":
                         user.cards[user.cardNames[currThing[2]]].baseHp = int(user.cards[user.cardNames[currThing[2]]].baseHp) + 2
+                        title_render = pygame.font.Font("src/font/Minister Std Bold.otf", 40).render("Nyereményed: (+2Hp) " + user.cards[user.cardNames[currThing[2]]].name + " (" + str(user.cards[user.cardNames[currThing[2]]].baseHp) + ")", True, (219, 163, 74))
                     else:
                         user.addCard(currThing[1])
+                        title_render = pygame.font.Font("src/font/Minister Std Bold.otf", 40).render("Nyereményed: (+1 " + currThing[1] + ")", True, (219, 163, 74))
                 once = False
             if currThing[0].split(' ')[1] == "nyert":
-                if currThing[1] == "sebzes":
-                    user.cards[user.cardNames[currThing[2]]].baseDmg = user.cards[user.cardNames[currThing[2]]].baseDmg + 1
-                    title_render = pygame.font.Font("src/font/Minister Std Bold.otf", 40).render("Nyereményed: (+1Dmg) " + user.cards[user.cardNames[currThing[2]]].name + " (" + str(user.cards[user.cardNames[currThing[2]]].baseDmg) + ")", True, (219, 163, 74))
-                elif currThing[1] == "eletero":
-                    user.cards[user.cardNames[currThing[2]]].baseHp = user.cards[user.cardNames[currThing[2]]].baseHp + 2
-                    title_render = pygame.font.Font("src/font/Minister Std Bold.otf", 40).render("Nyereményed: (+2Hp) " + user.cards[user.cardNames[currThing[2]]].name + " (" + str(user.cards[user.cardNames[currThing[2]]].baseHp) + ")", True, (219, 163, 74))
-                else:
-                    user.addCard(currThing[1])
-                    title_render = pygame.font.Font("src/font/Minister Std Bold.otf", 40).render("Nyereményed: (+1 " + currThing[1] + ")", True, (219, 163, 74))
                 screen.blit(WONIMG, (0,0))
                 screen.blit(title_render, (10, 500))
             else:
