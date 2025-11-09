@@ -8,11 +8,12 @@ width, height = 1280, 720
 #FO = főmenü
 #KARTYA = kártya menü
 #HARC =  harc event
-MENU = "KARTYA"
+MENU = "FO"
 
 user = None
 
 #fightEvent
+projanim:anim.Projectileanim | None = None 
 userCards:list[gameWrapper.CardSelectWrapper] = []
 dungeonCards:list[gameWrapper.CardSelectWrapper] = []
 turn=0
@@ -25,6 +26,9 @@ waittime = 0.5
 fightclock = 0
 endscreen = False
 endfightclock = 1
+playedDeadAnim = True
+WONIMG = None
+LOSTIMG = None
 
 #dungeon selection menu
 mode = 0
@@ -71,7 +75,35 @@ def play_sound(typein):
         fight_sound.set_volume(0.2)
         fight_sound.play()
 
+def fightEventEventhandler(event):
+    global endscreen
+    if endscreen:
+        if event.type==pygame.MOUSEBUTTONDOWN:
+            global turn
+            global isPlayerMove
+            global dungeonCardOut
+            global playerCardOut
+            global output
+            global fightclock
+            global endfightclock
+            global MENU
+            endscreen = False
+            dungeonCards.clear()
+            userCards.clear()
+            turn=0
+            isPlayerMove=False
+            playerCardOut = 0
+            dungeonCardOut = 0
+            output.clear()
+            fightclock = 0
+            MENU = "FO"
+            if swordanim != None:
+                swordanim.done=False
+                swordanim.innerclock = 0
+
 def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:float):
+    global WONIMG
+    global LOSTIMG
     global turn
     global endscreen
     global isPlayerMove
@@ -80,7 +112,8 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
     global output
     global fightclock
     global endfightclock
-    global MENU
+    global projanim
+    global playedDeadAnim
 
     ymargins = 10
     margins = 10
@@ -128,6 +161,18 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
         fightclock+=deltaTime
         pygame.display.flip()
         return
+    elif projanim != None and not projanim.done:
+        screen.blit(background,(0,0))
+        for card in userCards:
+            card.update(deltaTime,1.5)
+            card.draw(screen)
+        for card in dungeonCards:
+            card.update(deltaTime,1.5)
+            card.draw(screen)
+        projanim.playAnim(deltaTime,screen)
+        pygame.display.flip()
+        return
+
 
     #Check what to do
     currThing = output[turn].split(';')
@@ -145,6 +190,12 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
             turn+=1
             isPlayerMove = not isPlayerMove
         else:
+            if not playedDeadAnim:
+                if isPlayerMove:
+                    userCards[playerCardOut].destPos = (-20-dungeonCharCardWidth,height/2-dungeonCardHeight/2)
+                else:
+                    dungeonCards[dungeonCardOut].destPos = (width+20,height/2-dungeonCardHeight/2)
+                playedDeadAnim = True
             if userCards[playerCardOut].destPos == (-1,-1) and dungeonCards[dungeonCardOut].destPos == (-1,-1):
                 print(currThing)
                 print(playerCardOut)
@@ -161,24 +212,26 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
         if userCards[playerCardOut].destPos == (-1,-1) and dungeonCards[dungeonCardOut].destPos == (-1,-1):
             print(currThing)
             if isPlayerMove:
-                if currThing[-1] == '0':
-                    dungeonCards[dungeonCardOut].destPos = (width+20,-1)
-                else:
-                    dungeonCards[dungeonCardOut].destPos = (dungeonCards[dungeonCardOut].pos[0]+10,-1)
+                if projanim != None:
+                    projanim.done = False
+                    projanim.y = height//2
+                    projanim.startx = margins+dungeonCharCardWidth//2
+                    projanim.distance = width-dungeonCharCardWidth//2-margins - projanim.startx
+                    projanim.innerclock = 0
             else:
-                if currThing[-1] == '0':
-                    userCards[playerCardOut].destPos = (-dungeonCardWidth-20,-1)
-                else:
-                    userCards[playerCardOut].destPos = (userCards[playerCardOut].pos[0],-1)
+                if projanim != None:
+                    projanim.done = False
+                    projanim.y = height//2
+                    projanim.startx = width+dungeonCharCardWidth//2+margins
+                    projanim.distance = margins+dungeonCharCardWidth//2-projanim.startx
+                    projanim.innerclock = 0
+            if currThing[-1] == '0':
+                playedDeadAnim = False
             isPlayerMove = not isPlayerMove
             turn+=1
     else:
-        if waittime < endfightclock:
-            img = pygame.image.load("./src/img/WON.png")
-            img = pygame.transform.scale_by(img,2)
+        if waittime*2 < endfightclock:
             endscreen = True
-            screen.blit(img, (0,0))
-            print(currThing)
             if currThing[0].split(' ')[1] == "nyert":
                 if currThing[1] == "sebzes":
                     user.cards[user.cardNames[currThing[2]]].baseDmg = user.cards[user.cardNames[currThing[2]]].baseDmg + 1
@@ -186,18 +239,10 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
                     user.cards[user.cardNames[currThing[2]]].baseHp = user.cards[user.cardNames[currThing[2]]].baseHp + 2
                 else:
                     user.addCard(currThing[1])
-            dungeonCards.clear()
-            userCards.clear()
-            turn=0
-            isPlayerMove=False
-            playerCardOut = 0
-            dungeonCardOut = 0
-            output.clear()
-            if not endscreen:
-                fightclock = 0
-                if swordanim != None:
-                    swordanim.done=False
-                    swordanim.innerclock = 0
+                screen.blit(WONIMG, (0,0))
+            else:
+                screen.blit(LOSTIMG, (0,0))
+
         else:
             endfightclock+= deltaTime
 
@@ -529,6 +574,9 @@ def drawCards(screen,background):
 
 
 def UIMain():
+    global WONIMG
+    global LOSTIMG
+
     create()
     if user == None:
         print("Couldnt initialize user")
@@ -537,6 +585,12 @@ def UIMain():
     background = pygame.image.load("./src/img/BG.jpg")
     background = pygame.transform.scale(background,(width,height))
 
+    WONIMG = pygame.image.load("./src/img/WON.png")
+    WONIMG = pygame.transform.scale_by(WONIMG,2)
+
+    LOSTIMG = pygame.image.load("./src/img/LOST.png")
+    LOSTIMG = pygame.transform.scale_by(LOSTIMG,2)
+
     pygame.mixer.init()
     screen = pygame.display.set_mode((width, height))
     screen.fill((255, 255, 255))
@@ -544,6 +598,8 @@ def UIMain():
     clock:pygame.time.Clock = pygame.time.Clock()
     global swordanim
     swordanim = anim.SwordAnim(width,height)
+    global projanim
+    projanim = anim.Projectileanim(width,height)
 
     while running:
         for event in pygame.event.get():
@@ -553,6 +609,8 @@ def UIMain():
                 kazamata_update(event)
             elif MENU == "KARTYA":
                 selectPackScreenEventHandler(event)
+            else:
+                fightEventEventhandler(event)
 
         fps = clock.get_fps()
         if fps == 0:

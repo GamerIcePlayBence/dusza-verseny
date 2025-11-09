@@ -85,6 +85,7 @@ class CardSelectWrapper:
         self.speed:tuple = (-1,-1)
         self.card:game.Card = card
         self.selected = False
+        self.disabled = False
 
         self.font = pygame.font.Font("src/font/Minister Std Bold.otf", 25)
         self.title_render = pygame.font.Font("src/font/Minister Std Bold.otf", 25).render(self.card.name, True, (255,255,255))
