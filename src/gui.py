@@ -21,6 +21,8 @@ playerCardOut = 0
 dungeonCardOut = 0
 output:list[str] = []
 swordanim = None
+waittime = 1.75
+fightclock = 0
 
 #dungeon selection menu
 mode = 0
@@ -75,7 +77,7 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
     global output
     global MENU
 
-    if not swordanim.done:
+    if swordanim != None and not swordanim.done:
         screen.blit(background,(0,0))
         swordanim.playAnim(deltaTime,screen)
         pygame.display.flip()
@@ -164,6 +166,9 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
         playerCardOut = 0
         dungeonCardOut = 0
         output.clear()
+        if swordanim != None:
+            swordanim.done=False
+            swordanim.innerclock = 0
         MENU = "FO"
 
 
