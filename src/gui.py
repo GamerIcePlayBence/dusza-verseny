@@ -21,7 +21,7 @@ playerCardOut = 0
 dungeonCardOut = 0
 output:list[str] = []
 swordanim = None
-waittime = 1.75
+waittime = 0.5
 fightclock = 0
 
 #dungeon selection menu
@@ -75,13 +75,9 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
     global dungeonCardOut
     global playerCardOut
     global output
+    global fightclock
     global MENU
 
-    if swordanim != None and not swordanim.done:
-        screen.blit(background,(0,0))
-        swordanim.playAnim(deltaTime,screen)
-        pygame.display.flip()
-        return
     ymargins = 10
     margins = 10
     if len(output) == 0:
@@ -106,6 +102,28 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
             dungeonCards.append(gameWrapper.CardSelectWrapper(dungeonCharCardWidth,dungeonCharCardHeight,dungeonxpos+percard*counter+margins,ymargins,card))
             counter+=1
 
+    if swordanim != None and not swordanim.done:
+        screen.blit(background,(0,0))
+        for card in userCards:
+            card.update(deltaTime,1.5)
+            card.draw(screen)
+        for card in dungeonCards:
+            card.update(deltaTime,1.5)
+            card.draw(screen)
+        swordanim.playAnim(deltaTime,screen)
+        pygame.display.flip()
+        return
+    elif fightclock < waittime:
+        screen.blit(background,(0,0))
+        for card in userCards:
+            card.update(deltaTime,1.5)
+            card.draw(screen)
+        for card in dungeonCards:
+            card.update(deltaTime,1.5)
+            card.draw(screen)
+        fightclock+=deltaTime
+        pygame.display.flip()
+        return
 
     #Check what to do
     currThing = output[turn].split(';')
@@ -166,6 +184,7 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
         playerCardOut = 0
         dungeonCardOut = 0
         output.clear()
+        fightclock = 0
         if swordanim != None:
             swordanim.done=False
             swordanim.innerclock = 0
