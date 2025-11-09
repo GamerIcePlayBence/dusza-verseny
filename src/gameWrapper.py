@@ -87,7 +87,7 @@ class CardSelectWrapper:
         self.selected = False
         self.disabled = False
 
-        self.font = pygame.font.Font("src/font/Minister Std Bold.otf", 25)
+        self.font = pygame.font.Font("src/font/Minister Std Bold.otf", 20)
         self.title_render = pygame.font.Font("src/font/Minister Std Bold.otf", 25).render(self.card.name, True, (255,255,255))
         self.space_card_name1 = ""
         self.space_card_name2 = ""
@@ -97,8 +97,8 @@ class CardSelectWrapper:
             self.space_card_name1 = self.card.name.split(" ")[0]
             self.space_card_name2 = self.card.name.split(" ")[1]
             if len(self.space_card_name1) > 4:
-                self.title_render1 = pygame.font.Font("src/font/Minister Std Bold.otf", 20).render( self.space_card_name1, True, (255,255,255))
-                self.title_render2 = pygame.font.Font("src/font/Minister Std Bold.otf", 20).render(self.space_card_name2, True, (255,255,255))
+                self.title_render1 = pygame.font.Font("src/font/Minister Std Bold.otf", 19).render( self.space_card_name1, True, (255,255,255))
+                self.title_render2 = pygame.font.Font("src/font/Minister Std Bold.otf", 19).render(self.space_card_name2, True, (255,255,255))
             else:
                 self.title_render1 = pygame.font.Font("src/font/Minister Std Bold.otf", 25).render( self.space_card_name1, True, (255,255,255))
                 self.title_render2 = pygame.font.Font("src/font/Minister Std Bold.otf", 25).render(self.space_card_name2, True, (255,255,255))
@@ -152,20 +152,34 @@ class CardSelectWrapper:
         if self.selected:
             pygame.draw.rect(screen,(255,255,0),(self.cardRect.x-selectedOffset//2,self.cardRect.y-selectedOffset//2,self.cardRect.w+selectedOffset,self.cardRect.h+selectedOffset),border_radius=10)
         pygame.draw.rect(screen,(255,0,0),self.cardRect,border_radius=10)
+
+        if self.card.type == "viz":
+            font_texture = pygame.image.load("src/img/víz.png").convert_alpha()
+            font_texture_scaled = pygame.transform.scale(font_texture, (self.cardRect.width, self.cardRect.height))
+            screen.blit(font_texture_scaled, self.cardRect.topleft)
+        elif self.card.type == "tuz":
+            font_texture = pygame.image.load("src/img/fire_card.png").convert_alpha()
+            font_texture_scaled = pygame.transform.scale(font_texture, (self.cardRect.width, self.cardRect.height))
+            screen.blit(font_texture_scaled, self.cardRect.topleft)
+        elif self.card.type == "levego":
+            font_texture = pygame.image.load("src/img/air.png").convert_alpha()
+            font_texture_scaled = pygame.transform.scale(font_texture, (self.cardRect.width, self.cardRect.height))
+            screen.blit(font_texture_scaled, self.cardRect.topleft)
+        elif self.card.type == "fold":
+            font_texture = pygame.image.load("src/img/dirt_card.png").convert_alpha()
+            font_texture_scaled = pygame.transform.scale(font_texture, (self.cardRect.width, self.cardRect.height))
+            screen.blit(font_texture_scaled, self.cardRect.topleft)
+
         if self.card.name.find(" ") >= 1:
             if len(self.space_card_name1) <= 4:
                 screen.blit(self.title_render1, (self.cardRect.centerx-35, self.cardRect.top+11))
             else:
-                screen.blit(self.title_render1, (self.cardRect.centerx-45, self.cardRect.top+11))
+                screen.blit(self.title_render1, (self.cardRect.centerx-41, self.cardRect.top+11))
             screen.blit(self.title_render2, (self.cardRect.centerx-35, self.cardRect.top+45))
         else:
             screen.blit(self.title_render, (self.cardRect.centerx-35, self.cardRect.top+11))
 
-        #screen.blit(self.stats_render, (self.cardRect.centerx-28, self.cardRect.centery-8))
-       # if self.card.type == "levego":
-        #    screen.blit(self.type_render, (self.cardRect.centerx-55, self.cardRect.centery+27))
-        #else:
-        screen.blit(self.stats_render, (self.cardRect.centerx-20, self.cardRect.centery+27))
+        screen.blit(self.stats_render, (self.cardRect.centerx-15, self.cardRect.centery+52))
 
 
 def putInORtakeOut(card1:CardSelectWrapper, user:game.User):
