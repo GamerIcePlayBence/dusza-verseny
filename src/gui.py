@@ -1,7 +1,7 @@
 import pygame
+from src import anim
 from src import gameWrapper
 from src import game
-import time as Tm
 
 width, height = 1280, 720
 
@@ -11,6 +11,16 @@ width, height = 1280, 720
 MENU = "KARTYA"
 
 user = None
+
+#fightEvent
+userCards:list[gameWrapper.CardSelectWrapper] = []
+dungeonCards:list[gameWrapper.CardSelectWrapper] = []
+turn=0
+isPlayerMove=False
+playerCardOut = 0
+dungeonCardOut = 0
+output:list[str] = []
+swordanim = anim.SwordAnim(width,height)
 
 #dungeon selection menu
 mode = 0
@@ -57,13 +67,23 @@ def play_sound(typein):
         letsgo_sound.set_volume(0.2)
         letsgo_sound.play()
 
-def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen):
+def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:float):
+    global turn
+    global isPlayerMove
+    global dungeonCardOut
+    global playerCardOut
+    global output
+    global MENU
+
+    if not swordanim.done:
+        screen.blit(background,(0,0))
+        swordanim.playAnim(deltaTime,screen)
+        pygame.display.flip()
+        return
     ymargins = 10
     margins = 10
-    output:str = game.fight(game.cardLookup[dungeon.name],user)
-
-    userCards:list[gameWrapper.CardSelectWrapper] = []
-    dungeonCards:list[gameWrapper.CardSelectWrapper] = []
+    if len(output) == 0:
+        output = game.fight(game.cardLookup[dungeon.name],user).split('\n')
 
     screen.blit(background,(0,0))
 
@@ -81,12 +101,77 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen):
         counter = 0
         for name in dungeon.cards:
             card = game.availableCards[game.cardLookup[name]]
-            userCards.append(gameWrapper.CardSelectWrapper(dungeonCharCardWidth,dungeonCharCardHeight,dungeonxpos+percard*counter+margins,ymargins,card))
+            dungeonCards.append(gameWrapper.CardSelectWrapper(dungeonCharCardWidth,dungeonCharCardHeight,dungeonxpos+percard*counter+margins,ymargins,card))
             counter+=1
 
+
+    #Check what to do
+    currThing = output[turn].split(';')
+    while len(output[turn]) == 0 or currThing[0]=="harc kezdodik":
+        output.pop(turn)
+        currThing = output[turn].split(';')
+
+    if len(currThing)>=3 and currThing[2] == 'kijatszik':
+        if currThing[0] == '1.kor':
+            print(currThing)
+            if isPlayerMove:
+                userCards[0].destPos = (margins,height/2-dungeonCharCardHeight/2)
+            else:
+                dungeonCards[0].destPos = (width-dungeonCharCardWidth-margins,height/2-dungeonCharCardHeight/2)
+            turn+=1
+            isPlayerMove = not isPlayerMove
+        else:
+            if userCards[playerCardOut].destPos == (-1,-1) and dungeonCards[dungeonCardOut].destPos == (-1,-1):
+                print(currThing)
+                print(playerCardOut)
+                print(dungeonCardOut)
+                if isPlayerMove:
+                    userCards[playerCardOut+1].destPos = (margins,height/2-dungeonCharCardHeight/2)
+                    playerCardOut+=1
+                else:
+                    dungeonCards[dungeonCardOut+1].destPos = (width-dungeonCharCardWidth-margins,height/2-dungeonCharCardHeight/2)
+                    dungeonCardOut+=1
+                isPlayerMove = not isPlayerMove
+                turn+=1
+    elif len(currThing)>=3 and currThing[2] == 'tamad':
+        if userCards[playerCardOut].destPos == (-1,-1) and dungeonCards[dungeonCardOut].destPos == (-1,-1):
+            print(currThing)
+            if isPlayerMove:
+                if currThing[-1] == '0':
+                    dungeonCards[dungeonCardOut].destPos = (width+20,-1)
+                else:
+                    dungeonCards[dungeonCardOut].destPos = (dungeonCards[dungeonCardOut].pos[0]+10,-1)
+            else:
+                if currThing[-1] == '0':
+                    userCards[playerCardOut].destPos = (-dungeonCardWidth-20,-1)
+                else:
+                    userCards[playerCardOut].destPos = (userCards[playerCardOut].pos[0],-1)
+            isPlayerMove = not isPlayerMove
+            turn+=1
+    else:
+        print(currThing)
+        if currThing[0].split(' ')[1] == "nyert":
+            if currThing[1] == "sebzes":
+                user.cards[user.cardNames[currThing[2]]].baseDmg = user.cards[user.cardNames[currThing[2]]].baseDmg + 1
+            elif currThing[1] == "eletero":
+                user.cards[user.cardNames[currThing[2]]].baseHp = user.cards[user.cardNames[currThing[2]]].baseHp + 2
+            else:
+                user.addCard(currThing[1])
+        dungeonCards.clear()
+        userCards.clear()
+        turn=0
+        isPlayerMove=False
+        playerCardOut = 0
+        dungeonCardOut = 0
+        output.clear()
+        MENU = "FO"
+
+
     for card in userCards:
+        card.update(deltaTime,1.5)
         card.draw(screen)
     for card in dungeonCards:
+        card.update(deltaTime,1.5)
         card.draw(screen)
 
     pygame.display.flip()
@@ -132,15 +217,13 @@ def select_kazamata(screen,background,deltaTime):
     font_render = font.render("MENU = 'KARTYA'", True, (255,255,255))
     screen.blit(font_render, (1000, 15))
 
-        #for i in range(len(game.availableDungeons[2].cards)):
-        #    K_POS_X = 1050 - i*200
-        #    K_Rect = pygame.Rect(K_POS_X, 500, 150, 200)
-        #    pygame.draw.rect(screen, MK_Color, K_Rect, border_radius=10)
-        #    pygame.draw.rect(screen, (0, 0, 0), K_Rect, width=4, border_radius=10)
-    #Borders
-
 def backtokartya():
+    global MENU
+
+    dungeons.clear()
+    drawncards.clear()
     play_sound("wood")
+    MENU = "KARTYA"
 
 def kazamata_update(event):
     global mode
@@ -199,6 +282,8 @@ def create():
 
 def backtodungeon():
     global MENU
+    cards.clear()
+    cardsInPack.clear()
     play_sound("wood")
     MENU="FO"
 
@@ -309,10 +394,10 @@ def updateSelectPackScreen(screen,deltaTime:float,user,background):
         selectedCards.clear()
 
     for card in cardsInPack:
-        card.update(deltaTime)
+        card.update(deltaTime,-1)
         card.draw(cardlayer)
     for card in cards:
-        card.update(deltaTime)
+        card.update(deltaTime,-1)
         card.draw(cardlayer)
 
     if background == None:
@@ -405,6 +490,7 @@ def UIMain():
         print("Couldnt initialize user")
         return
     pygame.init()
+    pygame.display.init()
     background = pygame.image.load("./src/img/BG.jpg")
     background = pygame.transform.scale(background,(width,height))
 
@@ -414,8 +500,6 @@ def UIMain():
     running = True
     clock:pygame.time.Clock = pygame.time.Clock()
 
-    if MENU=="KARTYA":
-        drawCards(screen,background)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -432,9 +516,11 @@ def UIMain():
         if MENU == "FO":
             select_kazamata(screen,background,deltaTime)
         elif MENU == "KARTYA":
+            if len(cards) == 0 and len(cardsInPack) == 0:
+                drawCards(screen,background)
             updateSelectPackScreen(screen,deltaTime,user,background)
         else:
-            fightEvent(dungeons[mode].dungeon,user,background,screen)
+            fightEvent(dungeons[mode].dungeon,user,background,screen,deltaTime)
 
         pygame.display.flip()
         clock.tick(120)

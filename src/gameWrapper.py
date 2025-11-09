@@ -101,16 +101,19 @@ class CardSelectWrapper:
         self.stats_render = self.font.render(str(self.card.baseDmg) + "/"+ str(self.card.baseHp), True, (255,255,255))
         self.type_render = self.font.render(self.card.type, True, (255,255,255))
 
-    def update(self,deltaTime):
+    def update(self,deltaTime,animtime:float):
         if self.destPos == (-1,-1):
             return 
 
+        if animtime == -1:
+            animtime = swapAnimTime
+
         if self.speed[0] == -1:
             distancex = self.destPos[0] - self.pos[0] 
-            self.speed = (distancex/swapAnimTime,self.speed[1])
+            self.speed = (distancex/animtime,self.speed[1])
         if self.speed[1] == -1:
             distancey = self.destPos[1] - self.pos[1] 
-            self.speed = (self.speed[0],distancey/swapAnimTime)
+            self.speed = (self.speed[0],distancey/animtime)
 
         if self.destPos[0] != -1:
             if abs(self.pos[0] - self.destPos[0]) < 0.1:
