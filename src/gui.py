@@ -333,6 +333,10 @@ def select_kazamata(screen,background,deltaTime):
 
 def backtokartya():
     global MENU
+    global mode
+    global centered
+    centered = 0
+    mode = 0
 
     dungeons.clear()
     drawncards.clear()
