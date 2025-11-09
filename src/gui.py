@@ -20,7 +20,7 @@ isPlayerMove=False
 playerCardOut = 0
 dungeonCardOut = 0
 output:list[str] = []
-swordanim = anim.SwordAnim(width,height)
+swordanim = None
 
 #dungeon selection menu
 mode = 0
@@ -230,7 +230,6 @@ def kazamata_update(event):
     global MENU
     if event.type == pygame.MOUSEWHEEL:
         mode -= event.y
-        print(mode)
         if mode > len(dungeons)-1:
             mode = len(dungeons)-1
         elif mode < 3 and mode > -1:
@@ -501,6 +500,8 @@ def UIMain():
     screen.fill((255, 255, 255))
     running = True
     clock:pygame.time.Clock = pygame.time.Clock()
+    global swordanim
+    swordanim = anim.SwordAnim(width,height)
 
     while running:
         for event in pygame.event.get():
