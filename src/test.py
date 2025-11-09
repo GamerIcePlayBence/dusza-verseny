@@ -145,4 +145,8 @@ def TESTMain(test_dir_path):
             print("Hibás in.txt fálj!")
         pass
     else:
-        print("Hibás útvonal! Kérjük a megfelelő útvonalat írja be! (pl.: C:/dusza/)")
+        if Path(test_dir_path + 'in.txt').is_file():
+            test_dir_path = test_dir_path[:-1]
+            TESTMain(test_dir_path)
+        else:
+            print("Hibás útvonal! Kérjük a megfelelő útvonalat írja be! (pl.: C:/dusza/)")
