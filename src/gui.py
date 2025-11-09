@@ -25,8 +25,9 @@ swordanim = None
 waittime = 0.5
 fightclock = 0
 endscreen = False
-endfightclock = 1
+endfightclock = 0
 playedDeadAnim = True
+once = True
 WONIMG = None
 LOSTIMG = None
 
@@ -87,6 +88,7 @@ def fightEventEventhandler(event):
             global fightclock
             global endfightclock
             global MENU
+            global once
             endscreen = False
             dungeonCards.clear()
             userCards.clear()
@@ -96,7 +98,9 @@ def fightEventEventhandler(event):
             dungeonCardOut = 0
             output.clear()
             fightclock = 0
+            endfightclock = 0
             MENU = "FO"
+            once = True
             if swordanim != None:
                 swordanim.done=False
                 swordanim.innerclock = 0
@@ -114,6 +118,7 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
     global endfightclock
     global projanim
     global playedDeadAnim
+    global once
 
     ymargins = 10
     margins = 10
@@ -169,7 +174,27 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
         for card in dungeonCards:
             card.update(deltaTime,1.5)
             card.draw(screen)
-        projanim.playAnim(deltaTime,screen)
+        if isPlayerMove:
+            projanim.playAnim(deltaTime,screen,userCards[playerCardOut])
+        else:
+            projanim.playAnim(deltaTime,screen,dungeonCards[dungeonCardOut])
+        pygame.display.flip()
+        return
+    elif not playedDeadAnim:
+        if isPlayerMove:
+            userCards[playerCardOut].destPos = (-20-dungeonCharCardWidth,height/2-dungeonCardHeight/2)
+            userCards[playerCardOut].disabled = True
+        else:
+            dungeonCards[dungeonCardOut].destPos = (width+20,height/2-dungeonCardHeight/2)
+            dungeonCards[dungeonCardOut].disabled = True
+        playedDeadAnim = True
+        screen.blit(background,(0,0))
+        for card in userCards:
+            card.update(deltaTime,1.5)
+            card.draw(screen)
+        for card in dungeonCards:
+            card.update(deltaTime,1.5)
+            card.draw(screen)
         pygame.display.flip()
         return
 
@@ -190,12 +215,6 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
             turn+=1
             isPlayerMove = not isPlayerMove
         else:
-            if not playedDeadAnim:
-                if isPlayerMove:
-                    userCards[playerCardOut].destPos = (-20-dungeonCharCardWidth,height/2-dungeonCardHeight/2)
-                else:
-                    dungeonCards[dungeonCardOut].destPos = (width+20,height/2-dungeonCardHeight/2)
-                playedDeadAnim = True
             if userCards[playerCardOut].destPos == (-1,-1) and dungeonCards[dungeonCardOut].destPos == (-1,-1):
                 print(currThing)
                 print(playerCardOut)
@@ -215,16 +234,18 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
                 if projanim != None:
                     projanim.done = False
                     projanim.y = height//2
-                    projanim.startx = margins+dungeonCharCardWidth//2
-                    projanim.distance = width-dungeonCharCardWidth//2-margins - projanim.startx
+                    projanim.startx = margins+dungeonCharCardWidth
+                    projanim.distance = width-dungeonCharCardWidth-margins - projanim.startx
                     projanim.innerclock = 0
             else:
                 if projanim != None:
                     projanim.done = False
                     projanim.y = height//2
-                    projanim.startx = width+dungeonCharCardWidth//2+margins
-                    projanim.distance = margins+dungeonCharCardWidth//2-projanim.startx
+                    projanim.startx = width+dungeonCharCardWidth+margins
+                    projanim.distance = margins+dungeonCharCardWidth-projanim.startx
                     projanim.innerclock = 0
+            if projanim != None:
+                projanim.health = int(currThing[-1])
             if currThing[-1] == '0':
                 playedDeadAnim = False
             isPlayerMove = not isPlayerMove
@@ -232,6 +253,15 @@ def fightEvent(dungeon:game.Dungeon,user:game.User,background,screen,deltaTime:f
     else:
         if waittime*2 < endfightclock:
             endscreen = True
+            if once:
+                if currThing[0].split(' ')[1] == "nyert":
+                    if currThing[1] == "sebzes":
+                        user.cards[user.cardNames[currThing[2]]].baseDmg = int(user.cards[user.cardNames[currThing[2]]].baseDmg) + 1
+                    elif currThing[1] == "eletero":
+                        user.cards[user.cardNames[currThing[2]]].baseHp = int(user.cards[user.cardNames[currThing[2]]].baseHp) + 2
+                    else:
+                        user.addCard(currThing[1])
+                once = False
             if currThing[0].split(' ')[1] == "nyert":
                 if currThing[1] == "sebzes":
                     user.cards[user.cardNames[currThing[2]]].baseDmg = user.cards[user.cardNames[currThing[2]]].baseDmg + 1

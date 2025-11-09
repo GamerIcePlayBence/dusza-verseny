@@ -1,6 +1,8 @@
 import pygame
 import math
 
+from src import gameWrapper
+
 class SwordAnim:
     def __init__(self,width,height):
         self.width = width
@@ -40,6 +42,7 @@ class Projectileanim:
     def __init__(self,width,height):
         self.width = width
         self.height = height
+        self.health = 0
         self.y = 0
         self.startx = 0
         self.pic = pygame.image.load("./src/img/projectile.png").convert_alpha()
@@ -52,7 +55,7 @@ class Projectileanim:
     def _animtiming(self)->float:
         return self.innerclock**2*(self.distance/(self.animtime**2))
 
-    def playAnim(self,deltaTime,screen):
+    def playAnim(self,deltaTime,screen,card:gameWrapper.CardSelectWrapper):
         transformed = self.pic
         if self.distance < 0:
             transformed = pygame.transform.flip(transformed,True,False)
@@ -68,5 +71,6 @@ class Projectileanim:
 
         if self.innerclock >= self.animtime:
             self.done = True
+            card.updateHp(self.health)
         self.innerclock+=deltaTime
 
