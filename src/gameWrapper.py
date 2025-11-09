@@ -86,8 +86,8 @@ class CardSelectWrapper:
         self.card:game.Card = card
         self.selected = False
 
-        self.font = pygame.font.Font("src/font/Minister Std Bold.otf", 35)
-        self.title_render = pygame.font.Font("src/font/Minister Std Bold.otf", 25-(len(self.card.name)-6)).render(self.card.name, True, (255,255,255))
+        self.font = pygame.font.Font("src/font/Minister Std Bold.otf", 25)
+        self.title_render = pygame.font.Font("src/font/Minister Std Bold.otf", 25).render(self.card.name, True, (255,255,255))
         self.space_card_name1 = ""
         self.space_card_name2 = ""
         self.title_render1 = ""
@@ -95,11 +95,14 @@ class CardSelectWrapper:
         if self.card.name.find(" ") >= 1:
             self.space_card_name1 = self.card.name.split(" ")[0]
             self.space_card_name2 = self.card.name.split(" ")[1]
-            self.title_render1 = pygame.font.Font("src/font/Minister Std Bold.otf", 25-(len(self.space_card_name1)-6)).render( self.space_card_name1, True, (255,255,255))
-            self.title_render2 = pygame.font.Font("src/font/Minister Std Bold.otf", 25-(len(self.space_card_name2)-6)).render(self.space_card_name2, True, (255,255,255))
+            if len(self.space_card_name1) > 4:
+                self.title_render1 = pygame.font.Font("src/font/Minister Std Bold.otf", 20).render( self.space_card_name1, True, (255,255,255))
+                self.title_render2 = pygame.font.Font("src/font/Minister Std Bold.otf", 20).render(self.space_card_name2, True, (255,255,255))
+            else:
+                self.title_render1 = pygame.font.Font("src/font/Minister Std Bold.otf", 25).render( self.space_card_name1, True, (255,255,255))
+                self.title_render2 = pygame.font.Font("src/font/Minister Std Bold.otf", 25).render(self.space_card_name2, True, (255,255,255))
             
         self.stats_render = self.font.render(str(self.card.baseDmg) + "/"+ str(self.card.baseHp), True, (255,255,255))
-        self.type_render = self.font.render(self.card.type, True, (255,255,255))
 
     def update(self,deltaTime,animtime:float):
         if self.destPos == (-1,-1):
@@ -153,15 +156,15 @@ class CardSelectWrapper:
                 screen.blit(self.title_render1, (self.cardRect.centerx-35, self.cardRect.top+11))
             else:
                 screen.blit(self.title_render1, (self.cardRect.centerx-45, self.cardRect.top+11))
-            screen.blit(self.title_render2, (self.cardRect.centerx-35, self.cardRect.top+35))
+            screen.blit(self.title_render2, (self.cardRect.centerx-35, self.cardRect.top+45))
         else:
             screen.blit(self.title_render, (self.cardRect.centerx-35, self.cardRect.top+11))
 
-        screen.blit(self.stats_render, (self.cardRect.centerx-28, self.cardRect.centery-8))
-        if self.card.type == "levego":
-            screen.blit(self.type_render, (self.cardRect.centerx-55, self.cardRect.centery+27))
-        else:
-            screen.blit(self.type_render, (self.cardRect.centerx-30, self.cardRect.centery+27))
+        #screen.blit(self.stats_render, (self.cardRect.centerx-28, self.cardRect.centery-8))
+       # if self.card.type == "levego":
+        #    screen.blit(self.type_render, (self.cardRect.centerx-55, self.cardRect.centery+27))
+        #else:
+        screen.blit(self.stats_render, (self.cardRect.centerx-20, self.cardRect.centery+27))
 
 
 def putInORtakeOut(card1:CardSelectWrapper, user:game.User):

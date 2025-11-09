@@ -20,7 +20,7 @@ isPlayerMove=False
 playerCardOut = 0
 dungeonCardOut = 0
 output:list[str] = []
-swordanim = anim.SwordAnim(width,height)
+swordanim = None
 
 #dungeon selection menu
 mode = 0
@@ -212,10 +212,14 @@ def select_kazamata(screen,background,deltaTime):
         card.draw(screen)
 
     pygame.draw.line(screen, (0, 0, 0), (0, 500), (1280, 500), width=10)
-    pygame.draw.rect(screen, (0,0,0), (1000, 0, 300, 60))
-    font = pygame.font.Font("src/font/Minister Std Bold.otf", 28)
-    font_render = font.render("MENU = 'KARTYA'", True, (255,255,255))
-    screen.blit(font_render, (1000, 15))
+    pygame.draw.rect(screen, (96, 69, 44), (1080, 0, 200, 120), border_radius=10)
+    pygame.draw.rect(screen, (132, 101, 63), (1080, 0, 200, 120), width=4, border_radius=10)
+    font_texture = pygame.image.load("src/img/cards.png").convert_alpha()
+    font_texture_scaled = pygame.transform.scale(font_texture, (100, 100))
+    #font = pygame.font.Font("src/font/Minister Std Bold.otf", 28)
+    #font_render = font.render("MENU = 'KARTYA'", True, (255,255,255))
+    #screen.blit(font_render, (1000, 15))
+    screen.blit(font_texture_scaled, pygame.Rect(1170, 5, 200, 100).topleft)
 
 def backtokartya():
     global MENU
@@ -230,15 +234,16 @@ def kazamata_update(event):
     global MENU
     if event.type == pygame.MOUSEWHEEL:
         mode -= event.y
-        play_sound("scroll")
         if mode > len(dungeons)-1:
             mode = len(dungeons)-1
+        elif mode < 3 and mode > -1:
+            play_sound("scroll")
         if mode < 0:
             mode = 0
         shiftFocus()
     if event.type == pygame.MOUSEBUTTONDOWN:
         if event.button == 1:
-            if pygame.Rect(1160, 0, 120, 60).collidepoint(event.pos):
+            if pygame.Rect(1080, 0, 200, 120).collidepoint(event.pos):
                 backtokartya()
             for banner in dungeons:
                 if banner.cardRect.collidepoint(event.pos):
@@ -498,6 +503,8 @@ def UIMain():
     screen.fill((255, 255, 255))
     running = True
     clock:pygame.time.Clock = pygame.time.Clock()
+    global swordanim
+    swordanim = anim.SwordAnim(width,height)
 
     while running:
         for event in pygame.event.get():
