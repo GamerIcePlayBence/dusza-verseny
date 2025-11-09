@@ -247,6 +247,7 @@ def kazamata_update(event):
                 backtokartya()
             for banner in dungeons:
                 if banner.cardRect.collidepoint(event.pos):
+                    pygame.display.set_caption("Harc")
                     MENU = "FIGHT"
                     play_sound("letsgo")
 
@@ -426,6 +427,7 @@ def updateSelectPackScreen(screen,deltaTime:float,user,background):
 def drawCards(screen,background):
     global cardlayer
     global linepoint
+    pygame.display.set_caption("Kártyáid")
     margin = 10
     colcount:int = 10
     cardwidth:int = int(width/colcount-margin*2)
